@@ -55,38 +55,6 @@
         var status = editor.querySelector('.navi-faq-status');
         var nextNumber = parseInt(editor.getAttribute('data-next-number'), 10) || 1;
 
-        // Un éditeur TinyMCE initialisé pendant que son conteneur est caché
-        // (display:none) se retrouve avec une largeur/hauteur nulle — cas
-        // classique de l'onglet "FAQ (Navi)" dans "Données produit"
-        // (WooCommerce masque tous les panneaux sauf celui actif via une
-        // classe "hidden") et, désormais, d'une ligne repliée par défaut.
-        // Un évènement resize forcé quand le conteneur redevient visible
-        // suffit à faire recalculer sa mise en page par TinyMCE — mais cet
-        // évènement resize global fait aussi réagir d'autres scripts
-        // WordPress (barre d'admin, TinyMCE lui-même) qui peuvent replacer
-        // le défilement de la page, d'où le saut vers le haut au dépli
-        // d'une question. On mémorise donc la position de défilement juste
-        // avant et on la restaure juste après, quelle que soit la cause
-        // exacte du saut.
-        function refreshLayout() {
-            var scrollX = window.scrollX;
-            var scrollY = window.scrollY;
-            window.dispatchEvent(new Event('resize'));
-            window.scrollTo(scrollX, scrollY);
-        }
-
-        var wooPanel = editor.closest('.woocommerce_options_panel');
-        if (wooPanel && typeof MutationObserver !== 'undefined') {
-            var panelWasHidden = wooPanel.classList.contains('hidden');
-            new MutationObserver(function () {
-                var isHidden = wooPanel.classList.contains('hidden');
-                if (panelWasHidden && !isHidden) {
-                    refreshLayout();
-                }
-                panelWasHidden = isHidden;
-            }).observe(wooPanel, { attributes: true, attributeFilter: ['class'] });
-        }
-
         function announce(message) {
             if (status) {
                 status.textContent = message;
@@ -133,6 +101,34 @@
             if (typeof wp !== 'undefined' && wp.editor) {
                 wp.editor.remove(editorId);
             }
+        }
+
+        // Une ligne repliée par défaut au chargement (toutes sauf la
+        // première, voir navi_faq_render_editor_ui(), admin.php) a son
+        // éditeur TinyMCE initialisé pendant que son conteneur est encore
+        // caché (hidden) : il se retrouve avec une largeur/hauteur nulle.
+        // Détruire puis réinitialiser l'éditeur une fois la ligne visible
+        // corrige la mise en page — sans passer par un évènement "resize"
+        // global, qui fait aussi réagir editor-expand.js (barre d'outils
+        // collante de l'éditeur classique WordPress, présent sur les fiches
+        // produits mais pas sur les catégories) et provoquait le saut de
+        // défilement vers le haut de la page constaté uniquement là. On ne
+        // le fait qu'une fois par ligne (data-editor-fixed) : au dépli
+        // suivant, l'éditeur est déjà correctement dimensionné et une
+        // réinitialisation ferait juste perdre le focus/l'historique
+        // d'annulation en cours pour rien.
+        function fixEditorLayoutOnce(body) {
+            if (!body || body.hasAttribute('data-editor-fixed')) {
+                return;
+            }
+            body.setAttribute('data-editor-fixed', 'true');
+            var textarea = body.querySelector('textarea[id^="navi_faq_answer_"]');
+            if (!textarea || typeof tinymce === 'undefined' || !tinymce.get(textarea.id)) {
+                return;
+            }
+            var editorId = textarea.id;
+            removeEditor(editorId);
+            initEditor(editorId);
         }
 
         // Même structure accessible qu'une ligne rendue côté serveur (voir
@@ -202,7 +198,10 @@
             renumberTitles();
             initEditor('navi_faq_answer_' + number);
             if (open) {
-                refreshLayout();
+                // Jamais cachée à la création : pas besoin de
+                // fixEditorLayoutOnce(), mais on marque quand même la ligne
+                // pour ne pas la retraiter inutilement à un futur repli/dépli.
+                row.querySelector('.navi-faq-row-body').setAttribute('data-editor-fixed', 'true');
             }
             return row;
         }
@@ -306,7 +305,7 @@
                 if (body) {
                     body.hidden = wasOpen;
                     if (!wasOpen) {
-                        refreshLayout();
+                        fixEditorLayoutOnce(body);
                     }
                 }
                 return;
@@ -399,6 +398,14 @@
                 }
             });
         }
+
+        // La ligne rendue ouverte au chargement (la première, voir
+        // navi_faq_render_editor_ui(), admin.php) n'a jamais été cachée :
+        // son éditeur est déjà correctement dimensionné, pas besoin de
+        // fixEditorLayoutOnce() à un futur dépli.
+        rows.querySelectorAll('.navi-faq-row-body:not([hidden])').forEach(function (body) {
+            body.setAttribute('data-editor-fixed', 'true');
+        });
 
         renumberTitles();
     });

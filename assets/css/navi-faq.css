@@ -332,6 +332,14 @@
     padding: 4px 0;
 }
 
+/* Sans cette règle, [hidden] (posé par le filtre de recherche JS) perd
+   face à ".navi-faq-duplicate-target-option{display:block}" ci-dessus :
+   même spécificité, et notre feuille de style est chargée après celle du
+   navigateur, donc "display:block" gagnait et l'option restait visible. */
+.navi-faq-duplicate-target-option[hidden] {
+    display: none;
+}
+
 .navi-faq-duplicate-no-results {
     margin: 8px 0 0;
     font-style: italic;
@@ -372,6 +380,34 @@
 
 .navi-faq-import-status.is-error {
     color: #b32d2e;
+}
+
+/* Boîte "Navi" habillée manuellement pour l'écran de terme (catégories) :
+   il n'y a pas de add_meta_box() possible là (contrairement à la fiche
+   produit, voir navi_panel_render() plus bas) — ces couleurs reprennent
+   celles du postbox natif WordPress pour donner la même impression de
+   "boîte" sur les deux écrans. Voir navi_faq_render_term_field(), admin.php. */
+.navi-panel-box {
+    max-width: 640px;
+    border: 1px solid #dcdcde;
+    background: #fff;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.navi-panel-box-header {
+    padding: 8px 12px;
+    border-bottom: 1px solid #dcdcde;
+    background: #f6f7f7;
+}
+
+.navi-panel-box-header h3 {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.navi-panel-box-body {
+    padding: 12px;
 }
 
 /* Panneau "Navi" (metabox autonome sur la fiche produit, voir
