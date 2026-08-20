@@ -255,3 +255,24 @@
 .navi-faq-char-count.is-long {
     color: #b32d2e;
 }
+
+.navi-faq-duplicate {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #ddd;
+    max-width: 640px;
+}
+
+.navi-faq-duplicate h4 {
+    margin: 0 0 4px;
+}
+
+.navi-faq-duplicate-status {
+    margin: 8px 0 0;
+    font-size: 0.8125rem;
+    color: #666;
+}
+
+.navi-faq-duplicate-status.is-error {
+    color: #b32d2e;
+}
