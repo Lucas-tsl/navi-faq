@@ -165,21 +165,72 @@
     }
 }
 
-/* Admin : éditeur de rangées Q/R (metabox post + champ de terme) */
+/* Admin : éditeur de rangées Q/R (onglet "Données produit", metabox
+   article/page, champ de terme) — même esprit visuel que le front (cartes
+   fines, sans arrondi) pour une cohérence entre BO et affichage public. */
+.navi-faq-editor {
+    max-width: 640px;
+}
+
+.navi-faq-empty {
+    color: #666;
+    font-style: italic;
+    margin: 0 0 12px;
+}
+
 .navi-faq-row {
     border: 1px solid #ddd;
     background: #fff;
-    padding: 10px;
-    margin-bottom: 8px;
-    max-width: 600px;
+    margin-bottom: 12px;
 }
 
-.navi-faq-row label {
+.navi-faq-row-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: #f6f7f7;
+    border-bottom: 1px solid #ddd;
+}
+
+.navi-faq-row-title {
+    font-weight: 700;
+}
+
+.navi-faq-remove-row {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #a00;
+    font-size: 1.25rem;
+    line-height: 1;
+    padding: 0 4px;
+}
+
+.navi-faq-remove-row:hover {
+    color: #dc3232;
+}
+
+.navi-faq-row-body {
+    padding: 12px;
+}
+
+.navi-faq-field {
+    margin: 0 0 10px;
+}
+
+.navi-faq-field:last-child {
+    margin-bottom: 0;
+}
+
+.navi-faq-field label {
     font-weight: 600;
     display: block;
     margin-bottom: 4px;
+    font-size: 0.875rem;
 }
 
-.navi-faq-row p {
-    margin: 0 0 8px;
+.navi-faq-field-group label {
+    font-weight: 400;
+    color: #666;
 }
