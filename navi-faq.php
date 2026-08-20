@@ -43,5 +43,6 @@ function navi_faq_enqueue_shared_style() {
 
 require_once NAVI_FAQ_DIR . 'includes/data.php';
 require_once NAVI_FAQ_DIR . 'includes/admin.php';
+require_once NAVI_FAQ_DIR . 'includes/navi-panel.php';
 require_once NAVI_FAQ_DIR . 'includes/frontend.php';
 require_once NAVI_FAQ_DIR . 'includes/schema.php';

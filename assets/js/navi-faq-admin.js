@@ -424,4 +424,32 @@
                 });
         });
     });
+
+    // --- Onglets internes du panneau "Navi" (metabox autonome sur la fiche
+    // produit, voir includes/navi-panel.php) — indépendant de la boucle par
+    // éditeur FAQ ci-dessus : ce panneau peut un jour contenir plusieurs
+    // fonctionnalités Navi, pas seulement FAQ. ---
+    document.querySelectorAll('.navi-panel-tabs').forEach(function (wrap) {
+        var tabs = wrap.querySelectorAll('.navi-panel-tab-btn');
+
+        function activate(tab) {
+            tabs.forEach(function (btn) {
+                var isActive = btn === tab;
+                btn.classList.toggle('active', isActive);
+                btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                var panel = document.getElementById(btn.getAttribute('aria-controls'));
+                if (panel) {
+                    panel.classList.toggle('active', isActive);
+                    panel.toggleAttribute('hidden', !isActive);
+                }
+            });
+        }
+
+        wrap.addEventListener('click', function (event) {
+            var tab = event.target.closest('.navi-panel-tab-btn');
+            if (tab) {
+                activate(tab);
+            }
+        });
+    });
 })();

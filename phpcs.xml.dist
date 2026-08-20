@@ -31,12 +31,20 @@
     <!-- Fonctions de debug oubliées -->
     <rule ref="WordPress.PHP.DevelopmentFunctions"/>
 
-    <!-- Préfixe obligatoire pour toutes les fonctions/constantes/options globales -->
+    <!-- Préfixe obligatoire pour toutes les fonctions/constantes/options globales.
+         "navi" (sans "_faq") en plus de "navi_faq" : le panneau produit
+         "Navi" (includes/navi-panel.php) et son filtre
+         navi_product_panel_tabs sont une API volontairement partagée,
+         pensée pour que d'autres plugins de la famille Navi (ex. Stories,
+         plugin compagnon Saito Navi) puissent s'y greffer — un préfixe
+         navi_faq_ y serait trompeur. -->
     <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
         <properties>
             <property name="prefixes" type="array">
                 <element value="navi_faq"/>
                 <element value="NAVI_FAQ"/>
+                <element value="navi_panel"/>
+                <element value="navi_product_panel"/>
             </property>
         </properties>
     </rule>
