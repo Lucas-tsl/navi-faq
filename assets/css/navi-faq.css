@@ -1,0 +1,108 @@
+/* Front : accordéon */
+.navi-faq-block { margin: 1.5em 0; }
+.navi-faq-block-title { margin-bottom: 0.5em; }
+.navi-faq-accordion { border-top: 1px solid #ddd; }
+.navi-faq-item { border-bottom: 1px solid #ddd; }
+.navi-faq-question {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 14px 4px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    color: inherit;
+}
+.navi-faq-question::after {
+    content: '+';
+    float: right;
+}
+.navi-faq-question[aria-expanded="true"]::after {
+    content: '\2212';
+}
+.navi-faq-answer {
+    display: none;
+    padding: 0 4px 14px;
+}
+.navi-faq-answer.is-open {
+    display: block;
+}
+
+/* Front : onglets par thème (2+ thèmes nommés, voir navi_faq_render_items_html) */
+.navi-faq-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+.navi-faq-tabs-nav {
+    flex: 0 0 calc(33.333% - 15px);
+    max-width: calc(33.333% - 15px);
+    display: flex;
+    flex-direction: column;
+}
+.navi-faq-tabs-panels {
+    flex: 1 1 calc(66.666% - 15px);
+    min-width: 0;
+}
+.navi-faq-tab-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 12px 18px;
+    margin-bottom: 8px;
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #666;
+}
+.navi-faq-tab-btn:hover {
+    color: #111;
+}
+.navi-faq-tab-btn:focus-visible {
+    outline: 2px solid #111;
+    outline-offset: 2px;
+}
+.navi-faq-tab-btn.active {
+    background-color: #f8f9fa;
+    border-color: #f1f3f5;
+    color: #111;
+    font-weight: 600;
+}
+.navi-faq-tab-panel[hidden] {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .navi-faq-tabs-nav {
+        flex: 0 0 100%;
+        max-width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .navi-faq-tab-btn {
+        width: auto;
+        margin-bottom: 0;
+        border: 1px solid #eee;
+    }
+}
+
+/* Admin : éditeur de rangées Q/R (metabox post + champ de terme) */
+.navi-faq-row {
+    border: 1px solid #ddd;
+    background: #fff;
+    padding: 10px;
+    margin-bottom: 8px;
+    max-width: 600px;
+}
+.navi-faq-row label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+}
+.navi-faq-row p {
+    margin: 0 0 8px;
+}
