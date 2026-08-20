@@ -292,10 +292,19 @@
 .navi-faq-char-count {
     margin: 6px 0 0;
     font-size: 0.8125rem;
+    font-weight: 600;
     color: #666;
 }
 
-.navi-faq-char-count.is-long {
+.navi-faq-char-count.is-good {
+    color: #2a7a35;
+}
+
+.navi-faq-char-count.is-warning {
+    color: #b26a00;
+}
+
+.navi-faq-char-count.is-danger {
     color: #b32d2e;
 }
 

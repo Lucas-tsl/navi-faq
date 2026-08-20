@@ -1,10 +1,26 @@
 (function () {
-    // Seuil au-delà duquel la réponse est signalée comme "longue" pour un
-    // extrait FAQPage (Google recommande des réponses concises pour un bon
-    // rendu en résultat de recherche).
-    var CHAR_COUNT_LONG_THRESHOLD = 300;
+    // Paliers du compteur de mots de la réponse (extrait FAQPage : Google
+    // favorise des réponses concises). "warning" = encore acceptable mais
+    // on commence à délayer ; au-delà de "danger", mieux vaut raccourcir.
+    var WORD_COUNT_WARNING_AT = 40;
+    var WORD_COUNT_DANGER_AT = 70;
 
-    // Compteur de caractères de la réponse : un seul listener global sur
+    function countWords(text) {
+        text = text.trim();
+        return text ? text.split(/\s+/).length : 0;
+    }
+
+    function wordCountStage(count) {
+        if (count > WORD_COUNT_DANGER_AT) {
+            return 'danger';
+        }
+        if (count > WORD_COUNT_WARNING_AT) {
+            return 'warning';
+        }
+        return 'good';
+    }
+
+    // Compteur de mots de la réponse : un seul listener global sur
     // l'évènement TinyMCE 'AddEditor', plutôt qu'un branchement séparé pour
     // les lignes rendues côté serveur (déjà initialisées au chargement) et
     // celles ajoutées en JS (wp.editor.initialize()) — capte les deux sans
@@ -20,11 +36,12 @@
                 return;
             }
             function updateCount() {
-                var length = mceEditor.getContent({ format: 'text' }).trim().length;
-                var isLong = length > CHAR_COUNT_LONG_THRESHOLD;
-                var template = isLong ? naviFaqAdminI18n.charCountLong : naviFaqAdminI18n.charCount;
-                counter.textContent = template.replace('%d', length);
-                counter.classList.toggle('is-long', isLong);
+                var words = countWords(mceEditor.getContent({ format: 'text' }));
+                var stage = wordCountStage(words);
+                var template = naviFaqAdminI18n['wordCount_' + stage];
+                counter.textContent = template.replace('%d', words);
+                counter.classList.remove('is-good', 'is-warning', 'is-danger');
+                counter.classList.add('is-' + stage);
             }
             mceEditor.on('init keyup change SetContent', updateCount);
         });
@@ -44,9 +61,18 @@
         // (WooCommerce masque tous les panneaux sauf celui actif via une
         // classe "hidden") et, désormais, d'une ligne repliée par défaut.
         // Un évènement resize forcé quand le conteneur redevient visible
-        // suffit à faire recalculer sa mise en page par TinyMCE.
+        // suffit à faire recalculer sa mise en page par TinyMCE — mais cet
+        // évènement resize global fait aussi réagir d'autres scripts
+        // WordPress (barre d'admin, TinyMCE lui-même) qui peuvent replacer
+        // le défilement de la page, d'où le saut vers le haut au dépli
+        // d'une question. On mémorise donc la position de défilement juste
+        // avant et on la restaure juste après, quelle que soit la cause
+        // exacte du saut.
         function refreshLayout() {
+            var scrollX = window.scrollX;
+            var scrollY = window.scrollY;
             window.dispatchEvent(new Event('resize'));
+            window.scrollTo(scrollX, scrollY);
         }
 
         var wooPanel = editor.closest('.woocommerce_options_panel');
@@ -273,6 +299,7 @@
         rows.addEventListener('click', function (event) {
             var toggle = event.target.closest('.navi-faq-row-toggle');
             if (toggle) {
+                event.preventDefault();
                 var wasOpen = 'true' === toggle.getAttribute('aria-expanded');
                 var body = document.getElementById(toggle.getAttribute('aria-controls'));
                 toggle.setAttribute('aria-expanded', wasOpen ? 'false' : 'true');
