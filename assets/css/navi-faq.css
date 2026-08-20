@@ -1,33 +1,91 @@
-/* Front : accordéon */
-.navi-faq-block { margin: 1.5em 0; }
-.navi-faq-block-title { margin-bottom: 0.5em; }
-.navi-faq-accordion { border-top: 1px solid #ddd; }
-.navi-faq-item { border-bottom: 1px solid #ddd; }
+/* Front : bloc FAQ (accordéon simple ou à onglets) — largeur plafonnée et
+   centrée pour ne pas s'étirer sur toute la largeur d'une zone de contenu. */
+.navi-faq-block {
+    max-width: 1200px;
+    margin: 1.5em auto;
+}
+
+.navi-faq-block-title {
+    margin-bottom: 0.75em;
+}
+
+/* Accordéon : cartes fines, sans arrondi, léger contraste à l'ouverture —
+   <details>/<summary> natifs (voir navi_faq_render_item_html(), frontend.php). */
+.navi-faq-item {
+    border: 1px solid #f0f0f0;
+    margin-bottom: 12px;
+    background-color: #fff;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.navi-faq-item:last-child {
+    margin-bottom: 0;
+}
+
+.navi-faq-item[open] {
+    border-color: #e5e5e5;
+    background-color: #fafbfc;
+}
+
 .navi-faq-question {
-    display: block;
-    width: 100%;
-    text-align: left;
-    background: none;
-    border: none;
-    padding: 14px 4px;
-    font-weight: 600;
-    font-size: 1rem;
     cursor: pointer;
-    color: inherit;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 16px 20px;
+    color: #222;
+    font-size: 1.05rem;
+    font-weight: 500;
 }
-.navi-faq-question::after {
-    content: '+';
-    float: right;
-}
-.navi-faq-question[aria-expanded="true"]::after {
-    content: '\2212';
-}
-.navi-faq-answer {
+
+.navi-faq-question::-webkit-details-marker {
     display: none;
-    padding: 0 4px 14px;
 }
-.navi-faq-answer.is-open {
-    display: block;
+
+/* Chevron dessiné en CSS (coin de bordure pivoté) plutôt qu'une police
+   d'icônes ou une image : aucune dépendance externe, aucun flash au
+   chargement. */
+.navi-faq-question::after {
+    content: '';
+    flex: 0 0 auto;
+    width: 7px;
+    height: 7px;
+    border-right: 1.5px solid #999;
+    border-bottom: 1.5px solid #999;
+    transform: rotate(45deg);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.navi-faq-item[open] .navi-faq-question::after {
+    transform: rotate(225deg);
+    border-color: #111;
+}
+
+.navi-faq-answer {
+    padding: 0 20px 20px;
+    color: #555;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    animation: navi-faq-fade-in 0.25s ease-out;
+}
+
+.navi-faq-answer a {
+    color: #111;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+@keyframes navi-faq-fade-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .navi-faq-answer {
+        animation: none;
+    }
 }
 
 /* Front : onglets par thème (2+ thèmes nommés, voir navi_faq_render_items_html) */
@@ -36,16 +94,19 @@
     flex-wrap: wrap;
     gap: 30px;
 }
+
 .navi-faq-tabs-nav {
     flex: 0 0 calc(33.333% - 15px);
     max-width: calc(33.333% - 15px);
     display: flex;
     flex-direction: column;
 }
+
 .navi-faq-tabs-panels {
     flex: 1 1 calc(66.666% - 15px);
     min-width: 0;
 }
+
 .navi-faq-tab-btn {
     display: block;
     width: 100%;
@@ -58,31 +119,45 @@
     font-size: 1rem;
     color: #666;
 }
+
 .navi-faq-tab-btn:hover {
     color: #111;
 }
+
 .navi-faq-tab-btn:focus-visible {
     outline: 2px solid #111;
     outline-offset: 2px;
 }
+
 .navi-faq-tab-btn.active {
     background-color: #f8f9fa;
     border-color: #f1f3f5;
     color: #111;
     font-weight: 600;
 }
+
 .navi-faq-tab-panel[hidden] {
     display: none;
+}
+
+.navi-faq-tab-panel.active {
+    animation: navi-faq-fade-in 0.3s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .navi-faq-tab-panel.active {
+        animation: none;
+    }
 }
 
 @media (max-width: 768px) {
     .navi-faq-tabs-nav {
         flex: 0 0 100%;
         max-width: 100%;
-        flex-direction: row;
-        flex-wrap: wrap;
+        flex-flow: row wrap;
         gap: 8px;
     }
+
     .navi-faq-tab-btn {
         width: auto;
         margin-bottom: 0;
@@ -98,11 +173,13 @@
     margin-bottom: 8px;
     max-width: 600px;
 }
+
 .navi-faq-row label {
     font-weight: 600;
     display: block;
     margin-bottom: 4px;
 }
+
 .navi-faq-row p {
     margin: 0 0 8px;
 }
