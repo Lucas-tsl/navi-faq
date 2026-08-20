@@ -15,6 +15,8 @@ module.exports = [
         ajaxurl: "readonly",
         fetch: "readonly",
         FormData: "readonly",
+        Blob: "readonly",
+        URL: "readonly",
         naviFaqAdminI18n: "readonly",
         naviFaqEditorSettings: "readonly",
       },
