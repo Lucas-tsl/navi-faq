@@ -403,6 +403,48 @@
         renumberTitles();
     });
 
+    // --- Recherche dans la liste des destinations (seulement affichée au-delà
+    // de 5 destinations, voir navi_faq_render_duplicate_ui(), admin.php) :
+    // filtre les libellés côté client, insensible à la casse et aux accents
+    // (ex. "vetements" retrouve "Vêtements"). ---
+    // Plage Unicode des signes diacritiques combinants (U+0300-U+036F) :
+    // construite via les codes des caractères plutôt qu'un échappement
+    // \uXXXX écrit en dur dans le code, pour éviter tout souci
+    // d'encodage/affichage de ces caractères combinants dans le fichier
+    // source lui-même.
+    var DIACRITICS_PATTERN = new RegExp(
+        '[' + String.fromCharCode( 0x0300 ) + '-' + String.fromCharCode( 0x036f ) + ']',
+        'g'
+    );
+
+    function normalizeForSearch( str ) {
+        return str.toLowerCase().normalize( 'NFD' ).replace( DIACRITICS_PATTERN, '' );
+    }
+
+    document.querySelectorAll( '.navi-faq-duplicate' ).forEach( function ( wrapper ) {
+        var searchInput = wrapper.querySelector( '.navi-faq-duplicate-search' );
+        if ( !searchInput ) {
+            return;
+        }
+        var options = wrapper.querySelectorAll( '.navi-faq-duplicate-target-option' );
+        var noResults = wrapper.querySelector( '.navi-faq-duplicate-no-results' );
+
+        searchInput.addEventListener( 'input', function () {
+            var query = normalizeForSearch( searchInput.value.trim() );
+            var visibleCount = 0;
+            options.forEach( function ( label ) {
+                var matches = !query || normalizeForSearch( label.textContent ).indexOf( query ) !== -1;
+                label.hidden = !matches;
+                if ( matches ) {
+                    visibleCount++;
+                }
+            } );
+            if ( noResults ) {
+                noResults.hidden = visibleCount > 0;
+            }
+        } );
+    } );
+
     // --- "Dupliquer vers…" : appel AJAX, la sauvegarde est immédiate côté
     // serveur (voir navi_faq_ajax_duplicate(), admin.php) — n'affecte pas
     // le formulaire actuellement ouvert, seulement la destination choisie. ---
