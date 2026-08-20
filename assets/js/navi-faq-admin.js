@@ -303,8 +303,32 @@
 
         var exportBtn = editor.querySelector('.navi-faq-export-btn');
         var importBtn = editor.querySelector('.navi-faq-import-btn');
+        var importFile = editor.querySelector('.navi-faq-import-file');
         var importTextarea = editor.querySelector('.navi-faq-import-textarea');
         var importStatus = editor.querySelector('.navi-faq-import-status');
+
+        // Choisir un fichier remplit simplement la zone de texte : on garde
+        // un seul chemin de code pour valider/importer (le clic sur
+        // "Importer" reste nécessaire, avec sa confirmation).
+        if (importFile) {
+            importFile.addEventListener('change', function () {
+                var file = importFile.files[0];
+                if (!file) {
+                    return;
+                }
+                var reader = new FileReader();
+                reader.onload = function () {
+                    importTextarea.value = String(reader.result || '');
+                    importStatus.textContent = '';
+                    importStatus.classList.remove('is-error');
+                };
+                reader.onerror = function () {
+                    importStatus.textContent = naviFaqAdminI18n.importFileError;
+                    importStatus.classList.add('is-error');
+                };
+                reader.readAsText(file);
+            });
+        }
 
         if (exportBtn) {
             exportBtn.addEventListener('click', function () {
@@ -342,6 +366,9 @@
                     : result.message;
                 if (result.ok) {
                     importTextarea.value = '';
+                    if (importFile) {
+                        importFile.value = '';
+                    }
                 }
             });
         }
