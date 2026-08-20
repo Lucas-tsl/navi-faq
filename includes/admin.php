@@ -132,7 +132,7 @@ function navi_faq_save_term_meta( $term_id ) {
 function navi_faq_render_editor_ui( array $items, $field_prefix ) {
     $known_themes = navi_faq_get_known_themes();
     ?>
-    <div class="navi-faq-editor" data-prefix="<?php echo esc_attr( $field_prefix ); ?>" data-empty-label="<?php esc_attr_e( 'Aucune question pour l’instant.', 'navi-faq' ); ?>">
+    <div class="navi-faq-editor" data-prefix="<?php echo esc_attr( $field_prefix ); ?>" data-empty-label="<?php esc_attr_e( 'Aucune question pour l’instant.', 'navi-faq' ); ?>" data-next-number="<?php echo (int) ( count( $items ) + 1 ); ?>">
         <?php if ( $known_themes ) : ?>
             <datalist id="navi-faq-themes-datalist">
                 <?php foreach ( $known_themes as $theme ) : ?>
@@ -155,7 +155,30 @@ function navi_faq_render_editor_ui( array $items, $field_prefix ) {
     <?php
 }
 
+/**
+ * Réglages de l'éditeur visuel de la réponse — utilisés à la fois ici (rendu
+ * PHP des lignes déjà enregistrées, via wp_editor()) et en JS pour les
+ * lignes ajoutées dynamiquement (wp.editor.initialize(), voir
+ * navi_faq_enqueue_admin_assets() plus bas et assets/js/navi-faq-admin.js) :
+ * les deux DOIVENT rester synchronisés pour un rendu cohérent qu'une ligne
+ * vienne du serveur ou du clic sur "Ajouter une question". Barre d'outils
+ * volontairement réduite (gras/italique/listes/lien) : une réponse de FAQ
+ * n'a pas besoin de la mise en forme complète d'un article.
+ */
+function navi_faq_editor_tinymce_settings() {
+    return array(
+        'toolbar1'                     => 'bold italic bullist numlist link unlink',
+        'toolbar2'                     => '',
+        'menubar'                      => false,
+        'statusbar'                    => false,
+        'paste_remove_styles'          => true,
+        'paste_strip_class_attributes' => 'all',
+        'valid_elements'               => 'p,br,strong/b,em/i,ul,ol,li,a[href|target|rel]',
+    );
+}
+
 function navi_faq_render_row_markup( $field_prefix, $number, $question = '', $answer = '', $group = '' ) {
+    $editor_id = 'navi_faq_answer_' . $number;
     ?>
     <div class="navi-faq-row">
         <div class="navi-faq-row-header">
@@ -173,13 +196,26 @@ function navi_faq_render_row_markup( $field_prefix, $number, $question = '', $an
                 <input type="text" class="widefat" list="navi-faq-themes-datalist" name="<?php echo esc_attr( $field_prefix ); ?>_group[]" value="<?php echo esc_attr( $group ); ?>" placeholder="<?php esc_attr_e( 'ex. Livraison, Nos parfums…', 'navi-faq' ); ?>" />
             </p>
             <p class="navi-faq-field">
-                <label><?php esc_html_e( 'Question', 'navi-faq' ); ?></label>
-                <input type="text" class="widefat" name="<?php echo esc_attr( $field_prefix ); ?>_question[]" value="<?php echo esc_attr( $question ); ?>" />
+                <label for="<?php echo esc_attr( $field_prefix ); ?>_question_<?php echo (int) $number; ?>"><?php esc_html_e( 'Question', 'navi-faq' ); ?></label>
+                <input type="text" class="widefat" id="<?php echo esc_attr( $field_prefix ); ?>_question_<?php echo (int) $number; ?>" name="<?php echo esc_attr( $field_prefix ); ?>_question[]" value="<?php echo esc_attr( $question ); ?>" />
             </p>
-            <p class="navi-faq-field">
-                <label><?php esc_html_e( 'Réponse', 'navi-faq' ); ?></label>
-                <textarea class="widefat" rows="3" name="<?php echo esc_attr( $field_prefix ); ?>_answer[]"><?php echo esc_textarea( $answer ); ?></textarea>
-            </p>
+            <div class="navi-faq-field navi-faq-field-answer">
+                <label for="<?php echo esc_attr( $editor_id ); ?>"><?php esc_html_e( 'Réponse', 'navi-faq' ); ?></label>
+                <?php
+                wp_editor(
+                    $answer,
+                    $editor_id,
+                    array(
+                        'textarea_name' => $field_prefix . '_answer[]',
+                        'textarea_rows' => 5,
+                        'media_buttons' => false,
+                        'teeny'         => false,
+                        'quicktags'     => false,
+                        'tinymce'       => navi_faq_editor_tinymce_settings(),
+                    )
+                );
+                ?>
+            </div>
         </div>
     </div>
     <?php
@@ -190,8 +226,17 @@ function navi_faq_enqueue_admin_assets( $hook_suffix ) {
     if ( ! in_array( $hook_suffix, array( 'post.php', 'post-new.php', 'term.php', 'edit-tags.php' ), true ) ) {
         return;
     }
+
+    // Garantit que wp.editor.initialize()/remove() sont disponibles en JS
+    // même si aucune ligne n'est encore affichée au chargement (produit/
+    // catégorie sans FAQ pour l'instant) : sans ligne existante, aucun
+    // wp_editor() PHP n'est appelé plus bas, qui aurait sinon chargé ces
+    // scripts lui-même — voir "Ajouter une question" dans
+    // assets/js/navi-faq-admin.js.
+    wp_enqueue_editor();
+
     navi_faq_enqueue_shared_style();
-    wp_enqueue_script( 'navi-faq-admin', NAVI_FAQ_URL . 'assets/js/navi-faq-admin.js', array(), NAVI_FAQ_VERSION, true );
+    wp_enqueue_script( 'navi-faq-admin', NAVI_FAQ_URL . 'assets/js/navi-faq-admin.js', array( 'editor' ), NAVI_FAQ_VERSION, true );
     wp_localize_script( 'navi-faq-admin', 'naviFaqAdminI18n', array(
         'group'            => __( 'Thème (optionnel)', 'navi-faq' ),
         'groupPlaceholder' => __( 'ex. Livraison, Nos parfums…', 'navi-faq' ),
@@ -200,5 +245,13 @@ function navi_faq_enqueue_admin_assets( $hook_suffix ) {
         'remove'           => __( 'Supprimer cette question', 'navi-faq' ),
         /* translators: %d sera remplacé par le numéro de la question (JS, voir assets/js/navi-faq-admin.js). */
         'questionNumber'   => __( 'Question #%d', 'navi-faq' ),
+    ) );
+    wp_localize_script( 'navi-faq-admin', 'naviFaqEditorSettings', array(
+        // Doit rester en phase avec navi_faq_editor_tinymce_settings() —
+        // même barre d'outils, que la ligne vienne du serveur (wp_editor())
+        // ou d'un clic sur "Ajouter une question" (wp.editor.initialize()).
+        'tinymce'      => navi_faq_editor_tinymce_settings(),
+        'quicktags'    => false,
+        'mediaButtons' => false,
     ) );
 }
