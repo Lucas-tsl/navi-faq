@@ -38,6 +38,29 @@
         var status = editor.querySelector('.navi-faq-status');
         var nextNumber = parseInt(editor.getAttribute('data-next-number'), 10) || 1;
 
+        // Un éditeur TinyMCE initialisé pendant que son conteneur est caché
+        // (display:none) se retrouve avec une largeur/hauteur nulle — cas
+        // classique de l'onglet "FAQ (Navi)" dans "Données produit"
+        // (WooCommerce masque tous les panneaux sauf celui actif via une
+        // classe "hidden") et, désormais, d'une ligne repliée par défaut.
+        // Un évènement resize forcé quand le conteneur redevient visible
+        // suffit à faire recalculer sa mise en page par TinyMCE.
+        function refreshLayout() {
+            window.dispatchEvent(new Event('resize'));
+        }
+
+        var wooPanel = editor.closest('.woocommerce_options_panel');
+        if (wooPanel && typeof MutationObserver !== 'undefined') {
+            var panelWasHidden = wooPanel.classList.contains('hidden');
+            new MutationObserver(function () {
+                var isHidden = wooPanel.classList.contains('hidden');
+                if (panelWasHidden && !isHidden) {
+                    refreshLayout();
+                }
+                panelWasHidden = isHidden;
+            }).observe(wooPanel, { attributes: true, attributeFilter: ['class'] });
+        }
+
         function announce(message) {
             if (status) {
                 status.textContent = message;
@@ -92,12 +115,13 @@
         // label/id associés (WCAG 1.3.1/4.1.2 — un <label> sans attribut
         // "for" correspondant n'est pas programmatiquement relié à son
         // champ pour un lecteur d'écran).
-        function makeRow(number, values) {
+        function makeRow(number, values, open) {
             values = values || {};
             var editorId = 'navi_faq_answer_' + number;
             var groupId = prefix + '_group_' + number;
             var questionId = prefix + '_question_' + number;
             var titleId = prefix + '_row_title_' + number;
+            var bodyId = prefix + '_row_body_' + number;
 
             var row = document.createElement('div');
             row.className = 'navi-faq-row';
@@ -105,10 +129,13 @@
             row.setAttribute('aria-labelledby', titleId);
             row.innerHTML =
                 '<div class="navi-faq-row-header">' +
-                    '<span class="navi-faq-row-title" id="' + titleId + '"></span>' +
+                    '<button type="button" class="navi-faq-row-toggle" aria-expanded="' + (open ? 'true' : 'false') + '" aria-controls="' + bodyId + '">' +
+                        '<span class="navi-faq-row-title" id="' + titleId + '"></span>' +
+                        '<span class="navi-faq-row-chevron" aria-hidden="true"></span>' +
+                    '</button>' +
                     '<button type="button" class="navi-faq-remove-row" aria-label="' + naviFaqAdminI18n.remove + '">&times;</button>' +
                 '</div>' +
-                '<div class="navi-faq-row-body">' +
+                '<div class="navi-faq-row-body" id="' + bodyId + '"' + (open ? '' : ' hidden') + '>' +
                     '<p class="navi-faq-field navi-faq-field-group">' +
                         '<label for="' + groupId + '">' + naviFaqAdminI18n.group + '</label>' +
                         '<input type="text" class="widefat" id="' + groupId + '" list="navi-faq-themes-datalist" name="' + prefix + '_group[]" placeholder="' + naviFaqAdminI18n.groupPlaceholder + '" />' +
@@ -141,13 +168,16 @@
             return row;
         }
 
-        function addRow(values) {
-            var row = makeRow(nextNumber, values);
+        function addRow(values, open) {
+            var row = makeRow(nextNumber, values, open);
             var number = nextNumber;
             nextNumber++;
             rows.appendChild(row);
             renumberTitles();
             initEditor('navi_faq_answer_' + number);
+            if (open) {
+                refreshLayout();
+            }
             return row;
         }
 
@@ -217,12 +247,12 @@
             }
 
             clearRows();
-            valid.forEach(function (item) {
+            valid.forEach(function (item, index) {
                 addRow({
                     group: typeof item.group === 'string' ? item.group : '',
                     question: item.question,
                     answer: item.answer
-                });
+                }, 0 === index);
             });
             announce(naviFaqAdminI18n.rowAdded);
 
@@ -230,7 +260,9 @@
         }
 
         addBtn.addEventListener('click', function () {
-            var row = addRow();
+            // Une question qu'on vient d'ajouter est forcément dépliée : on
+            // veut la remplir tout de suite, pas la rouvrir en plus.
+            var row = addRow(undefined, true);
             var questionField = row.querySelector('input[name$="_question[]"]');
             if (questionField) {
                 questionField.focus();
@@ -239,6 +271,20 @@
         });
 
         rows.addEventListener('click', function (event) {
+            var toggle = event.target.closest('.navi-faq-row-toggle');
+            if (toggle) {
+                var wasOpen = 'true' === toggle.getAttribute('aria-expanded');
+                var body = document.getElementById(toggle.getAttribute('aria-controls'));
+                toggle.setAttribute('aria-expanded', wasOpen ? 'false' : 'true');
+                if (body) {
+                    body.hidden = wasOpen;
+                    if (!wasOpen) {
+                        refreshLayout();
+                    }
+                }
+                return;
+            }
+
             if (!event.target.classList.contains('navi-faq-remove-row')) {
                 return;
             }
