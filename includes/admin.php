@@ -2,10 +2,13 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // -------------------- Articles / pages --------------------
-// Les produits n'utilisent pas ce metabox générique : voir plus bas,
-// navi_faq_add_product_tab(), qui les intègre plutôt dans l'onglet
-// "Données produit" natif de WooCommerce (même patron que l'onglet
-// "Stories (Navi)" du plugin compagnon Saito Navi).
+// Les produits n'utilisent pas ce metabox générique : voir
+// includes/navi-panel.php, qui les intègre plutôt dans le panneau "Navi"
+// autonome (metabox à part, hors "Données produit" WooCommerce) — espace
+// partagé pensé pour accueillir d'autres fonctionnalités de la famille
+// Navi à l'avenir (ex. Stories, du plugin compagnon Saito Navi), sous
+// forme d'onglets internes plutôt que chacune sa propre entrée plate dans
+// "Données produit".
 
 add_action( 'add_meta_boxes', 'navi_faq_register_meta_box' );
 function navi_faq_register_meta_box() {
@@ -20,43 +23,6 @@ function navi_faq_register_meta_box() {
 function navi_faq_render_meta_box( $post ) {
     wp_nonce_field( 'navi_faq_save_' . $post->ID, 'navi_faq_nonce' );
     navi_faq_render_editor_ui( navi_faq_get_for_post( $post->ID ), 'navi_faq_post', 'post', $post->ID );
-}
-
-// -------------------- Produits (onglet "Données produit") --------------------
-
-add_filter( 'woocommerce_product_data_tabs', 'navi_faq_add_product_tab' );
-function navi_faq_add_product_tab( $tabs ) {
-    if ( ! in_array( 'product', navi_faq_post_types(), true ) ) {
-        return $tabs;
-    }
-    $tabs['navi_faq'] = array(
-        'label'    => __( 'FAQ (Navi)', 'navi-faq' ),
-        'target'   => 'navi_faq_product_data',
-        'class'    => array(),
-        'priority' => 65,
-    );
-    return $tabs;
-}
-
-add_action( 'woocommerce_product_data_panels', 'navi_faq_render_product_data_panel' );
-function navi_faq_render_product_data_panel() {
-    if ( ! in_array( 'product', navi_faq_post_types(), true ) ) {
-        return;
-    }
-    global $post;
-    if ( ! $post ) {
-        return;
-    }
-    ?>
-    <div id="navi_faq_product_data" class="panel woocommerce_options_panel hidden">
-        <div class="options_group" style="padding: 12px 20px;">
-            <?php
-            wp_nonce_field( 'navi_faq_save_' . $post->ID, 'navi_faq_nonce' );
-            navi_faq_render_editor_ui( navi_faq_get_for_post( $post->ID ), 'navi_faq_post', 'post', $post->ID );
-            ?>
-        </div>
-    </div>
-    <?php
 }
 
 add_action( 'save_post', 'navi_faq_save_post_meta' );

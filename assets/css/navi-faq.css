@@ -358,3 +358,42 @@
 .navi-faq-import-status.is-error {
     color: #b32d2e;
 }
+
+/* Panneau "Navi" (metabox autonome sur la fiche produit, voir
+   includes/navi-panel.php) — onglets internes, affichés seulement quand 2
+   fonctionnalités Navi ou plus sont enregistrées. */
+.navi-panel-tabs-nav {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 12px;
+}
+
+.navi-panel-tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: #666;
+}
+
+.navi-panel-tab-btn:hover {
+    color: #111;
+}
+
+.navi-panel-tab-btn:focus-visible {
+    outline: 2px solid #111;
+    outline-offset: -2px;
+}
+
+.navi-panel-tab-btn.active {
+    color: #111;
+    border-bottom-color: #111;
+}
+
+.navi-panel-tab-panel[hidden] {
+    display: none;
+}
