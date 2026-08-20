@@ -1,17 +1,22 @@
 (function () {
-    // --- Accordéon : chaque question s'ouvre/se ferme indépendamment ---
-    document.addEventListener('click', function (event) {
-        var button = event.target.closest('.navi-faq-question');
-        if (!button) {
-            return;
-        }
-        var answer = button.nextElementSibling;
-        if (!answer) {
-            return;
-        }
-        var expanded = button.getAttribute('aria-expanded') === 'true';
-        button.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-        answer.classList.toggle('is-open', !expanded);
+    // --- Accordéon exclusif : ouvrir une question referme les autres du même
+    // groupe. Le pli/dépli lui-même est natif (<details>/<summary>, voir
+    // navi_faq_render_item_html() dans frontend.php) : ceci n'est qu'un
+    // confort en plus, capturé en phase de capture car l'évènement natif
+    // 'toggle' ne remonte pas (pas de bubbling) — la capture, elle,
+    // fonctionne quel que soit le bubbling. ---
+    document.querySelectorAll('.navi-faq-accordion').forEach(function (accordion) {
+        accordion.addEventListener('toggle', function (event) {
+            var target = event.target;
+            if (!target.matches('.navi-faq-item') || !target.open) {
+                return;
+            }
+            accordion.querySelectorAll('.navi-faq-item[open]').forEach(function (other) {
+                if (other !== target) {
+                    other.removeAttribute('open');
+                }
+            });
+        }, true);
     });
 
     // --- Onglets par thème : clic + navigation clavier flèches gauche/droite
