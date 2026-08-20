@@ -355,11 +355,10 @@
     document.querySelectorAll('.navi-faq-duplicate-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
             var wrapper = btn.closest('.navi-faq-duplicate');
-            var select = wrapper.querySelector('.navi-faq-duplicate-target');
             var status = wrapper.querySelector('.navi-faq-duplicate-status');
-            var target = select.value;
+            var checked = wrapper.querySelectorAll('.navi-faq-duplicate-targets input[type="checkbox"]:checked');
 
-            if (!target) {
+            if (!checked.length) {
                 status.textContent = naviFaqAdminI18n.duplicateChooseTarget;
                 status.classList.remove('is-error');
                 return;
@@ -376,7 +375,9 @@
             data.append('action', 'navi_faq_duplicate');
             data.append('nonce', btn.getAttribute('data-nonce'));
             data.append('source', btn.getAttribute('data-source'));
-            data.append('target', target);
+            checked.forEach(function (checkbox) {
+                data.append('targets[]', checkbox.value);
+            });
 
             fetch(ajaxurl, { method: 'POST', credentials: 'same-origin', body: data })
                 .then(function (response) {
