@@ -367,10 +367,12 @@ function navi_faq_enqueue_admin_assets( $hook_suffix ) {
         'rowRemoved'       => __( 'Question supprimée.', 'navi-faq' ),
         'confirmRemove'    => __( 'Supprimer cette question ? Cette action ne peut pas être annulée.', 'navi-faq' ),
         'questionPlaceholder' => __( 'ex. Livrez-vous à l’international ?', 'navi-faq' ),
-        /* translators: %d sera remplacé par le nombre de caractères (texte brut) de la réponse. */
-        'charCount'        => __( '%d caractères', 'navi-faq' ),
-        /* translators: %d sera remplacé par le nombre de caractères (texte brut) de la réponse. */
-        'charCountLong'    => __( '%d caractères — plutôt long pour un extrait Google (environ 300 recommandés).', 'navi-faq' ),
+        /* translators: %d sera remplacé par le nombre de mots de la réponse. */
+        'wordCount_good'    => __( '%d mots — longueur idéale pour un extrait Google.', 'navi-faq' ),
+        /* translators: %d sera remplacé par le nombre de mots de la réponse. */
+        'wordCount_warning' => __( '%d mots — un peu long, essayez de rester concis.', 'navi-faq' ),
+        /* translators: %d sera remplacé par le nombre de mots de la réponse. */
+        'wordCount_danger'  => __( '%d mots — trop long pour un bon extrait Google (40 mots max recommandés).', 'navi-faq' ),
         'duplicateChooseTarget' => __( 'Cochez au moins une destination.', 'navi-faq' ),
         'duplicateConfirm'      => __( 'Remplacer les FAQ des destinations cochées par celles-ci ?', 'navi-faq' ),
         'duplicateInProgress'   => __( 'Duplication en cours…', 'navi-faq' ),
