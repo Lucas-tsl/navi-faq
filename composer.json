@@ -1,0 +1,20 @@
+{
+    "name": "lucas-tsl/navi-faq",
+    "description": "FAQ (questions/réponses) sur les articles, pages, produits et catégories de produits WooCommerce, avec schéma FAQPage (JSON-LD) et regroupement par thème.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.9",
+        "wp-coding-standards/wpcs": "^3.1",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "phpunit/phpunit": "^9.6"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "platform": {
+            "php": "7.4"
+        }
+    }
+}

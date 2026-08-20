@@ -139,11 +139,18 @@ function navi_faq_render_accordion_html( array $items ) {
     return $out;
 }
 
+/**
+ * <details>/<summary> plutôt qu'un bouton + JS pour le pli/dépli : widget de
+ * divulgation natif du navigateur (état ouvert/fermé, focus, annonce aux
+ * lecteurs d'écran déjà gérés nativement), qui fonctionne même si le JS ne
+ * charge pas — amélioration par rapport à un accordéon piloté uniquement en
+ * JS.
+ */
 function navi_faq_render_item_html( array $item ) {
-    $out  = '<div class="navi-faq-item">';
-    $out .= '<button type="button" class="navi-faq-question" aria-expanded="false">' . esc_html( $item['question'] ) . '</button>';
+    $out  = '<details class="navi-faq-item">';
+    $out .= '<summary class="navi-faq-question">' . esc_html( $item['question'] ) . '</summary>';
     $out .= '<div class="navi-faq-answer">' . wp_kses_post( wpautop( $item['answer'] ) ) . '</div>';
-    $out .= '</div>';
+    $out .= '</details>';
     return $out;
 }
 
