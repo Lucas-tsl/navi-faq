@@ -69,4 +69,40 @@
             }
         });
     });
+
+    // --- Ancre directe vers une question (#faq-N, voir
+    // navi_faq_next_anchor_id() dans frontend.php) : la déplie et active
+    // l'onglet qui la contient si elle est dans un panneau caché — sans
+    // ça, le navigateur ne peut ni faire défiler jusqu'à un élément dans un
+    // ancêtre [hidden], ni le dévoiler lui-même. ---
+    function openFromHash() {
+        var hash = window.location.hash;
+        if (hash.length < 2) {
+            return;
+        }
+        var target;
+        try {
+            target = document.querySelector(hash);
+        } catch {
+            return; // Fragment non exploitable comme sélecteur CSS.
+        }
+        if (!target || !target.classList.contains('navi-faq-item')) {
+            return;
+        }
+
+        var panel = target.closest('.navi-faq-tab-panel');
+        if (panel && panel.hasAttribute('hidden')) {
+            var tab = document.getElementById(panel.getAttribute('aria-labelledby'));
+            var tablist = tab ? tab.closest('.navi-faq-tabs-nav') : null;
+            if (tab && tablist) {
+                activateTab(tablist, tab);
+            }
+        }
+
+        target.setAttribute('open', '');
+        target.scrollIntoView({ block: 'center' });
+    }
+
+    openFromHash();
+    window.addEventListener('hashchange', openFromHash);
 })();
