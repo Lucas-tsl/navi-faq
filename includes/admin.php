@@ -210,16 +210,18 @@ function navi_faq_render_duplicate_ui( $source_type, $source_id ) {
     ?>
     <div class="navi-faq-duplicate">
         <h4><?php esc_html_e( 'Dupliquer ces FAQ vers…', 'navi-faq' ); ?></h4>
-        <p class="description"><?php esc_html_e( 'Remplace les FAQ existantes de la destination par celles actuellement enregistrées ici — pensez à sauvegarder vos modifications avant de dupliquer.', 'navi-faq' ); ?></p>
+        <p class="description"><?php esc_html_e( 'Cochez une ou plusieurs destinations : leurs FAQ existantes seront remplacées par celles actuellement enregistrées ici — pensez à sauvegarder vos modifications avant de dupliquer.', 'navi-faq' ); ?></p>
+        <fieldset class="navi-faq-duplicate-targets">
+            <legend class="screen-reader-text"><?php esc_html_e( 'Destinations', 'navi-faq' ); ?></legend>
+            <?php foreach ( $targets as $target ) : ?>
+                <label class="navi-faq-duplicate-target-option">
+                    <input type="checkbox" value="<?php echo esc_attr( $target['value'] ); ?>" />
+                    <?php echo esc_html( $target['label'] ); ?>
+                </label>
+            <?php endforeach; ?>
+        </fieldset>
         <p>
-            <label class="screen-reader-text" for="<?php echo esc_attr( $source_type . '_' . $source_id ); ?>_duplicate_target"><?php esc_html_e( 'Dupliquer vers', 'navi-faq' ); ?></label>
-            <select class="navi-faq-duplicate-target" id="<?php echo esc_attr( $source_type . '_' . $source_id ); ?>_duplicate_target">
-                <option value=""><?php esc_html_e( '— Choisir une destination —', 'navi-faq' ); ?></option>
-                <?php foreach ( $targets as $target ) : ?>
-                    <option value="<?php echo esc_attr( $target['value'] ); ?>"><?php echo esc_html( $target['label'] ); ?></option>
-                <?php endforeach; ?>
-            </select>
-            <button type="button" class="button navi-faq-duplicate-btn" data-source="<?php echo esc_attr( navi_faq_entity_key( $source_type, $source_id ) ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( 'navi_faq_duplicate' ) ); ?>"><?php esc_html_e( 'Dupliquer', 'navi-faq' ); ?></button>
+            <button type="button" class="button navi-faq-duplicate-btn" data-source="<?php echo esc_attr( navi_faq_entity_key( $source_type, $source_id ) ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( 'navi_faq_duplicate' ) ); ?>"><?php esc_html_e( 'Dupliquer vers la sélection', 'navi-faq' ); ?></button>
         </p>
         <p class="navi-faq-duplicate-status" role="status"></p>
     </div>
@@ -230,33 +232,50 @@ add_action( 'wp_ajax_navi_faq_duplicate', 'navi_faq_ajax_duplicate' );
 function navi_faq_ajax_duplicate() {
     check_ajax_referer( 'navi_faq_duplicate', 'nonce' );
 
-    $source = isset( $_POST['source'] ) ? sanitize_text_field( wp_unslash( $_POST['source'] ) ) : '';
-    $target = isset( $_POST['target'] ) ? sanitize_text_field( wp_unslash( $_POST['target'] ) ) : '';
+    $source  = isset( $_POST['source'] ) ? sanitize_text_field( wp_unslash( $_POST['source'] ) ) : '';
+    $targets = isset( $_POST['targets'] ) ? (array) wp_unslash( $_POST['targets'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- chaque entrée passée à navi_faq_parse_entity_key(), qui ne renvoie qu'un type ('post'|'term') et un id entiers validés par expression régulière.
 
     list( $source_type, $source_id ) = navi_faq_parse_entity_key( $source );
-    list( $target_type, $target_id ) = navi_faq_parse_entity_key( $target );
 
-    if ( ! $source_type || ! $target_type ) {
-        wp_send_json_error( array( 'message' => __( 'Destination invalide.', 'navi-faq' ) ) );
+    if ( ! $source_type || ! navi_faq_current_user_can_edit_entity( $source_type, $source_id ) ) {
+        wp_send_json_error( array( 'message' => __( 'Source invalide ou droits insuffisants.', 'navi-faq' ) ) );
     }
 
-    if ( ! navi_faq_current_user_can_edit_entity( $source_type, $source_id )
-        || ! navi_faq_current_user_can_edit_entity( $target_type, $target_id ) ) {
-        wp_send_json_error( array( 'message' => __( 'Vous n’avez pas les droits nécessaires sur la source ou la destination.', 'navi-faq' ) ) );
+    if ( empty( $targets ) ) {
+        wp_send_json_error( array( 'message' => __( 'Choisissez au moins une destination.', 'navi-faq' ) ) );
     }
 
     $items = ( 'post' === $source_type ) ? navi_faq_get_for_post( $source_id ) : navi_faq_get_for_term( $source_id );
 
-    if ( 'post' === $target_type ) {
-        navi_faq_save_for_post( $target_id, $items );
-    } else {
-        navi_faq_save_for_term( $target_id, $items );
+    $done    = 0;
+    $skipped = 0;
+    foreach ( $targets as $target ) {
+        list( $target_type, $target_id ) = navi_faq_parse_entity_key( sanitize_text_field( $target ) );
+        if ( ! $target_type || ! navi_faq_current_user_can_edit_entity( $target_type, $target_id ) ) {
+            $skipped++;
+            continue;
+        }
+        if ( 'post' === $target_type ) {
+            navi_faq_save_for_post( $target_id, $items );
+        } else {
+            navi_faq_save_for_term( $target_id, $items );
+        }
+        $done++;
     }
 
-    wp_send_json_success( array(
-        /* translators: %d: nombre de questions dupliquées. */
-        'message' => sprintf( _n( '%d question dupliquée.', '%d questions dupliquées.', count( $items ), 'navi-faq' ), count( $items ) ),
-    ) );
+    if ( 0 === $done ) {
+        wp_send_json_error( array( 'message' => __( 'Aucune destination valide (droits insuffisants ?).', 'navi-faq' ) ) );
+    }
+
+    /* translators: 1: nombre de destinations mises à jour, 2: nombre de questions dupliquées sur chacune. */
+    $message_template = _n( 'Dupliqué vers %1$d destination (%2$d question).', 'Dupliqué vers %1$d destinations (%2$d questions).', $done, 'navi-faq' );
+    $message           = sprintf( $message_template, $done, count( $items ) );
+    if ( $skipped > 0 ) {
+        /* translators: %d: nombre de destinations ignorées faute de droits suffisants. */
+        $message .= ' ' . sprintf( _n( '%d destination ignorée (droits insuffisants).', '%d destinations ignorées (droits insuffisants).', $skipped, 'navi-faq' ), $skipped );
+    }
+
+    wp_send_json_success( array( 'message' => $message ) );
 }
 
 /**
@@ -380,8 +399,8 @@ function navi_faq_enqueue_admin_assets( $hook_suffix ) {
         'charCount'        => __( '%d caractères', 'navi-faq' ),
         /* translators: %d sera remplacé par le nombre de caractères (texte brut) de la réponse. */
         'charCountLong'    => __( '%d caractères — plutôt long pour un extrait Google (environ 300 recommandés).', 'navi-faq' ),
-        'duplicateChooseTarget' => __( 'Choisissez d’abord une destination.', 'navi-faq' ),
-        'duplicateConfirm'      => __( 'Remplacer les FAQ de la destination par celles-ci ?', 'navi-faq' ),
+        'duplicateChooseTarget' => __( 'Cochez au moins une destination.', 'navi-faq' ),
+        'duplicateConfirm'      => __( 'Remplacer les FAQ des destinations cochées par celles-ci ?', 'navi-faq' ),
         'duplicateInProgress'   => __( 'Duplication en cours…', 'navi-faq' ),
         'duplicateError'        => __( 'Une erreur est survenue, réessayez.', 'navi-faq' ),
         'importInvalidJson'  => __( 'JSON invalide — vérifiez le format collé.', 'navi-faq' ),

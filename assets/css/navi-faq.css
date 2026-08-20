@@ -310,6 +310,19 @@
     margin: 0 0 4px;
 }
 
+.navi-faq-duplicate-targets {
+    border: 1px solid #ddd;
+    max-height: 220px;
+    overflow-y: auto;
+    padding: 4px 8px;
+    margin: 8px 0;
+}
+
+.navi-faq-duplicate-target-option {
+    display: block;
+    padding: 4px 0;
+}
+
 .navi-faq-duplicate-status {
     margin: 8px 0 0;
     font-size: 0.8125rem;
