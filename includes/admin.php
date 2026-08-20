@@ -178,15 +178,21 @@ function navi_faq_render_editor_ui( array $items, $field_prefix, $source_type = 
  * de questions en dehors de WordPress.
  */
 function navi_faq_render_import_export_ui() {
+    $file_id     = wp_unique_id( 'navi_faq_import_file_' );
     $textarea_id = wp_unique_id( 'navi_faq_import_' );
     ?>
     <div class="navi-faq-import-export">
         <h4><?php esc_html_e( 'Importer / Exporter (JSON)', 'navi-faq' ); ?></h4>
-        <p class="description"><?php esc_html_e( 'Exporter récupère les questions telles qu’affichées ici, y compris non enregistrées. Importer remplace toutes les questions du formulaire par le contenu collé ci-dessous (format généré par Exporter).', 'navi-faq' ); ?></p>
+        <p class="description"><?php esc_html_e( 'Exporter récupère les questions telles qu’affichées ici, y compris non enregistrées. Importer remplace toutes les questions du formulaire par le contenu d’un fichier .json (format généré par Exporter), choisi ci-dessous ou collé directement.', 'navi-faq' ); ?></p>
         <p><button type="button" class="button navi-faq-export-btn"><?php esc_html_e( 'Exporter en JSON', 'navi-faq' ); ?></button></p>
+        <p class="navi-faq-field">
+            <label for="<?php echo esc_attr( $file_id ); ?>"><?php esc_html_e( 'Choisir un fichier .json', 'navi-faq' ); ?></label>
+            <input type="file" class="navi-faq-import-file" id="<?php echo esc_attr( $file_id ); ?>" accept="application/json,.json" />
+        </p>
         <p class="navi-faq-field">
             <label class="screen-reader-text" for="<?php echo esc_attr( $textarea_id ); ?>"><?php esc_html_e( 'JSON à importer', 'navi-faq' ); ?></label>
             <textarea class="widefat navi-faq-import-textarea" id="<?php echo esc_attr( $textarea_id ); ?>" rows="4" placeholder="[{&quot;question&quot;:&quot;…&quot;,&quot;answer&quot;:&quot;…&quot;,&quot;group&quot;:&quot;…&quot;}]"></textarea>
+            <p class="description"><?php esc_html_e( 'Rempli automatiquement si vous choisissez un fichier ci-dessus — ou collez le JSON ici directement.', 'navi-faq' ); ?></p>
         </p>
         <p><button type="button" class="button navi-faq-import-btn"><?php esc_html_e( 'Importer', 'navi-faq' ); ?></button></p>
         <p class="navi-faq-import-status" role="status"></p>
@@ -409,6 +415,7 @@ function navi_faq_enqueue_admin_assets( $hook_suffix ) {
         /* translators: %d sera remplacé par le nombre de questions importées. */
         'importSuccess'      => __( '%d question(s) importée(s). Pensez à enregistrer pour conserver ce résultat.', 'navi-faq' ),
         'exportEmpty'        => __( 'Aucune question à exporter pour l’instant.', 'navi-faq' ),
+        'importFileError'    => __( 'Impossible de lire ce fichier.', 'navi-faq' ),
     ) );
     wp_localize_script( 'navi-faq-admin', 'naviFaqEditorSettings', array(
         // Doit rester en phase avec navi_faq_editor_tinymce_settings() —
