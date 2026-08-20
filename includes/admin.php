@@ -150,7 +150,6 @@ function navi_faq_render_editor_ui( array $items, $field_prefix ) {
             <?php endforeach; ?>
         </div>
         <p><button type="button" class="button navi-faq-add-row">+ <?php esc_html_e( 'Ajouter une question', 'navi-faq' ); ?></button></p>
-        <p class="description"><?php esc_html_e( 'Donnez le même thème à plusieurs questions pour les regrouper sous un même onglet en front (ex. "Livraison" sur 3 questions). Laissez vide pour un simple accordéon sans onglets.', 'navi-faq' ); ?></p>
         <?php
         // Zone d'annonce dédiée (WCAG 4.1.3, statut) plutôt qu'un aria-live
         // posé directement sur .navi-faq-rows : sur cette dernière, un
@@ -206,16 +205,18 @@ function navi_faq_render_row_markup( $field_prefix, $number, $question = '', $an
         </div>
         <div class="navi-faq-row-body">
             <p class="navi-faq-field navi-faq-field-group">
-                <label for="<?php echo esc_attr( $group_id ); ?>"><?php esc_html_e( 'Thème (optionnel)', 'navi-faq' ); ?></label>
+                <label for="<?php echo esc_attr( $group_id ); ?>"><?php esc_html_e( 'Thème', 'navi-faq' ); ?> <span class="navi-faq-field-optional"><?php esc_html_e( '(optionnel)', 'navi-faq' ); ?></span></label>
                 <input type="text" class="widefat" id="<?php echo esc_attr( $group_id ); ?>" list="navi-faq-themes-datalist" name="<?php echo esc_attr( $field_prefix ); ?>_group[]" value="<?php echo esc_attr( $group ); ?>" placeholder="<?php esc_attr_e( 'ex. Livraison, Nos parfums…', 'navi-faq' ); ?>" />
+                <p class="description"><?php esc_html_e( 'Donnez le même thème à plusieurs questions pour les regrouper sous un même onglet en front. Laissez vide pour un simple accordéon sans onglets.', 'navi-faq' ); ?></p>
             </p>
             <p class="navi-faq-field">
                 <label for="<?php echo esc_attr( $question_id ); ?>"><?php esc_html_e( 'Question', 'navi-faq' ); ?></label>
-                <input type="text" class="widefat" id="<?php echo esc_attr( $question_id ); ?>" name="<?php echo esc_attr( $field_prefix ); ?>_question[]" value="<?php echo esc_attr( $question ); ?>" />
+                <input type="text" class="widefat" id="<?php echo esc_attr( $question_id ); ?>" name="<?php echo esc_attr( $field_prefix ); ?>_question[]" value="<?php echo esc_attr( $question ); ?>" placeholder="<?php esc_attr_e( 'ex. Livrez-vous à l’international ?', 'navi-faq' ); ?>" />
+                <p class="description"><?php esc_html_e( 'Telle qu’un client pourrait la poser — affichée en titre cliquable.', 'navi-faq' ); ?></p>
             </p>
             <div class="navi-faq-field navi-faq-field-answer">
                 <label for="<?php echo esc_attr( $editor_id ); ?>"><?php esc_html_e( 'Réponse', 'navi-faq' ); ?></label>
-                <p class="description" id="<?php echo esc_attr( $editor_id ); ?>_hint"><?php esc_html_e( 'Le bouton lien de la barre d’outils permet de rechercher directement une page ou un produit du site, ou de coller une URL externe.', 'navi-faq' ); ?></p>
+                <p class="description"><?php esc_html_e( 'Affichée sous la question une fois dépliée. Le bouton lien de la barre d’outils permet de rechercher directement une page ou un produit du site, ou de coller une URL externe.', 'navi-faq' ); ?></p>
                 <?php
                 wp_editor(
                     $answer,
@@ -230,6 +231,7 @@ function navi_faq_render_row_markup( $field_prefix, $number, $question = '', $an
                     )
                 );
                 ?>
+                <p class="navi-faq-char-count" data-editor="<?php echo esc_attr( $editor_id ); ?>"></p>
             </div>
         </div>
     </div>
@@ -264,6 +266,12 @@ function navi_faq_enqueue_admin_assets( $hook_suffix ) {
         // navi_faq_render_editor_ui() (.navi-faq-status) ci-dessus.
         'rowAdded'         => __( 'Question ajoutée.', 'navi-faq' ),
         'rowRemoved'       => __( 'Question supprimée.', 'navi-faq' ),
+        'confirmRemove'    => __( 'Supprimer cette question ? Cette action ne peut pas être annulée.', 'navi-faq' ),
+        'questionPlaceholder' => __( 'ex. Livrez-vous à l’international ?', 'navi-faq' ),
+        /* translators: %d sera remplacé par le nombre de caractères (texte brut) de la réponse. */
+        'charCount'        => __( '%d caractères', 'navi-faq' ),
+        /* translators: %d sera remplacé par le nombre de caractères (texte brut) de la réponse. */
+        'charCountLong'    => __( '%d caractères — plutôt long pour un extrait Google (environ 300 recommandés).', 'navi-faq' ),
     ) );
     wp_localize_script( 'navi-faq-admin', 'naviFaqEditorSettings', array(
         // Doit rester en phase avec navi_faq_editor_tinymce_settings() —

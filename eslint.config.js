@@ -11,6 +11,7 @@ module.exports = [
         window: "readonly",
         document: "readonly",
         wp: "readonly",
+        tinymce: "readonly",
         naviFaqAdminI18n: "readonly",
         naviFaqEditorSettings: "readonly",
       },
