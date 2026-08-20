@@ -107,3 +107,100 @@ function navi_faq_get_known_themes() {
 
     return array_keys( $themes );
 }
+
+/**
+ * Clé compacte identifiant un propriétaire de FAQ, utilisée côté client
+ * (menu "Dupliquer vers…", voir navi_faq_render_duplicate_ui() et
+ * navi_faq_ajax_duplicate(), admin.php) plutôt que deux champs séparés.
+ */
+function navi_faq_entity_key( $type, $id ) {
+    return $type . ':' . (int) $id;
+}
+
+/**
+ * Inverse de navi_faq_entity_key() — array( '', 0 ) si la clé est malformée
+ * (ne doit normalement jamais arriver hors requête forgée à la main).
+ */
+function navi_faq_parse_entity_key( $key ) {
+    if ( ! is_string( $key ) || ! preg_match( '/^(post|term):(\d+)$/', $key, $matches ) ) {
+        return array( '', 0 );
+    }
+    return array( $matches[1], (int) $matches[2] );
+}
+
+/**
+ * Cibles possibles pour dupliquer un jeu de FAQ — tous les posts des types
+ * couverts et tous les termes des taxonomies couvertes, à l'exclusion de
+ * l'entité actuellement éditée (source). Alimente le menu déroulant
+ * "Dupliquer vers…" (voir navi_faq_render_duplicate_ui(), admin.php) ; même
+ * limite de volumétrie que navi_faq_get_known_themes() (pas de cache pour
+ * l'instant, admin uniquement).
+ */
+function navi_faq_get_duplicate_targets( $exclude_type, $exclude_id ) {
+    $targets = array();
+
+    foreach ( navi_faq_post_types() as $post_type ) {
+        $post_type_object = get_post_type_object( $post_type );
+        $type_label        = $post_type_object ? $post_type_object->labels->singular_name : $post_type;
+
+        $query = new WP_Query( array(
+            'post_type'      => $post_type,
+            'posts_per_page' => -1,
+            'post_status'    => 'any',
+            'orderby'        => 'title',
+            'order'          => 'ASC',
+            'no_found_rows'  => true,
+        ) );
+        foreach ( $query->posts as $post ) {
+            if ( 'post' === $exclude_type && (int) $exclude_id === $post->ID ) {
+                continue;
+            }
+            $title = get_the_title( $post );
+            if ( '' === $title ) {
+                continue;
+            }
+            $targets[] = array(
+                'value' => navi_faq_entity_key( 'post', $post->ID ),
+                'label' => $type_label . ' : ' . $title,
+            );
+        }
+    }
+
+    foreach ( navi_faq_taxonomies() as $taxonomy ) {
+        $terms = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false ) );
+        if ( is_wp_error( $terms ) ) {
+            continue;
+        }
+        $taxonomy_object = get_taxonomy( $taxonomy );
+        $type_label       = $taxonomy_object ? $taxonomy_object->labels->singular_name : $taxonomy;
+
+        foreach ( $terms as $term ) {
+            if ( 'term' === $exclude_type && (int) $exclude_id === $term->term_id ) {
+                continue;
+            }
+            $targets[] = array(
+                'value' => navi_faq_entity_key( 'term', $term->term_id ),
+                'label' => $type_label . ' : ' . $term->name,
+            );
+        }
+    }
+
+    return $targets;
+}
+
+/**
+ * Peut l'utilisateur courant modifier les FAQ de cette entité ? Vérifié à
+ * la fois pour la source et la destination avant une duplication (voir
+ * navi_faq_ajax_duplicate(), admin.php) — sans ça, un utilisateur limité à
+ * un produit donné pourrait copier son contenu vers un article qu'il n'a
+ * pas le droit de modifier, ou l'inverse.
+ */
+function navi_faq_current_user_can_edit_entity( $type, $id ) {
+    if ( 'post' === $type ) {
+        return current_user_can( 'edit_post', $id );
+    }
+    if ( 'term' === $type ) {
+        return current_user_can( 'manage_categories' );
+    }
+    return false;
+}
