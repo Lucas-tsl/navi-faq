@@ -179,10 +179,17 @@ function navi_faq_render_duplicate_ui( $source_type, $source_id ) {
     if ( empty( $targets ) ) {
         return;
     }
+    $search_id = wp_unique_id( 'navi_faq_duplicate_search_' );
     ?>
     <div class="navi-faq-duplicate">
         <h4><?php esc_html_e( 'Dupliquer ces FAQ vers…', 'navi-faq' ); ?></h4>
         <p class="description"><?php esc_html_e( 'Cochez une ou plusieurs destinations : leurs FAQ existantes seront remplacées par celles actuellement enregistrées ici — pensez à sauvegarder vos modifications avant de dupliquer.', 'navi-faq' ); ?></p>
+        <?php if ( count( $targets ) > 5 ) : ?>
+            <p class="navi-faq-field">
+                <label for="<?php echo esc_attr( $search_id ); ?>"><?php esc_html_e( 'Rechercher une destination', 'navi-faq' ); ?></label>
+                <input type="search" class="widefat navi-faq-duplicate-search" id="<?php echo esc_attr( $search_id ); ?>" placeholder="<?php esc_attr_e( 'Filtrer par nom…', 'navi-faq' ); ?>" />
+            </p>
+        <?php endif; ?>
         <fieldset class="navi-faq-duplicate-targets">
             <legend class="screen-reader-text"><?php esc_html_e( 'Destinations', 'navi-faq' ); ?></legend>
             <?php foreach ( $targets as $target ) : ?>
@@ -191,6 +198,7 @@ function navi_faq_render_duplicate_ui( $source_type, $source_id ) {
                     <?php echo esc_html( $target['label'] ); ?>
                 </label>
             <?php endforeach; ?>
+            <p class="navi-faq-duplicate-no-results" hidden><?php esc_html_e( 'Aucune destination ne correspond à la recherche.', 'navi-faq' ); ?></p>
         </fieldset>
         <p>
             <button type="button" class="button navi-faq-duplicate-btn" data-source="<?php echo esc_attr( navi_faq_entity_key( $source_type, $source_id ) ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( 'navi_faq_duplicate' ) ); ?>"><?php esc_html_e( 'Dupliquer vers la sélection', 'navi-faq' ); ?></button>

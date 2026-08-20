@@ -332,6 +332,12 @@
     padding: 4px 0;
 }
 
+.navi-faq-duplicate-no-results {
+    margin: 8px 0 0;
+    font-style: italic;
+    color: #666;
+}
+
 .navi-faq-duplicate-status {
     margin: 8px 0 0;
     font-size: 0.8125rem;
