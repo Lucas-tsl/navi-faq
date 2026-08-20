@@ -1,4 +1,35 @@
 (function () {
+    // Seuil au-delà duquel la réponse est signalée comme "longue" pour un
+    // extrait FAQPage (Google recommande des réponses concises pour un bon
+    // rendu en résultat de recherche).
+    var CHAR_COUNT_LONG_THRESHOLD = 300;
+
+    // Compteur de caractères de la réponse : un seul listener global sur
+    // l'évènement TinyMCE 'AddEditor', plutôt qu'un branchement séparé pour
+    // les lignes rendues côté serveur (déjà initialisées au chargement) et
+    // celles ajoutées en JS (wp.editor.initialize()) — capte les deux sans
+    // dupliquer la logique.
+    if (typeof tinymce !== 'undefined') {
+        tinymce.on('AddEditor', function (event) {
+            var mceEditor = event.editor;
+            if (!mceEditor.id || 0 !== mceEditor.id.indexOf('navi_faq_answer_')) {
+                return;
+            }
+            var counter = document.querySelector('.navi-faq-char-count[data-editor="' + mceEditor.id + '"]');
+            if (!counter) {
+                return;
+            }
+            function updateCount() {
+                var length = mceEditor.getContent({ format: 'text' }).trim().length;
+                var isLong = length > CHAR_COUNT_LONG_THRESHOLD;
+                var template = isLong ? naviFaqAdminI18n.charCountLong : naviFaqAdminI18n.charCount;
+                counter.textContent = template.replace('%d', length);
+                counter.classList.toggle('is-long', isLong);
+            }
+            mceEditor.on('init keyup change SetContent', updateCount);
+        });
+    }
+
     document.querySelectorAll('.navi-faq-editor').forEach(function (editor) {
         var prefix = editor.getAttribute('data-prefix');
         var emptyLabel = editor.getAttribute('data-empty-label') || '';
@@ -83,35 +114,42 @@
                     '</p>' +
                     '<p class="navi-faq-field">' +
                         '<label for="' + questionId + '">' + naviFaqAdminI18n.question + '</label>' +
-                        '<input type="text" class="widefat" id="' + questionId + '" name="' + prefix + '_question[]" />' +
+                        '<input type="text" class="widefat" id="' + questionId + '" name="' + prefix + '_question[]" placeholder="' + naviFaqAdminI18n.questionPlaceholder + '" />' +
                     '</p>' +
                     '<div class="navi-faq-field navi-faq-field-answer">' +
                         '<label for="' + editorId + '">' + naviFaqAdminI18n.answer + '</label>' +
                         '<textarea id="' + editorId + '" class="widefat" rows="5" name="' + prefix + '_answer[]"></textarea>' +
+                        '<p class="navi-faq-char-count" data-editor="' + editorId + '"></p>' +
                     '</div>' +
                 '</div>';
+
+            return row;
+        }
+
+        function addRow() {
+            var row = makeRow(nextNumber);
+            var number = nextNumber;
+            nextNumber++;
+            rows.appendChild(row);
+            renumberTitles();
+            initEditor('navi_faq_answer_' + number);
             return row;
         }
 
         addBtn.addEventListener('click', function () {
-            var row = makeRow(nextNumber);
-            nextNumber++;
-            rows.appendChild(row);
-            renumberTitles();
-
-            var editorId = row.querySelector('textarea').id;
-            initEditor(editorId);
-
+            var row = addRow();
             var questionField = row.querySelector('input[name$="_question[]"]');
             if (questionField) {
                 questionField.focus();
             }
-
             announce(naviFaqAdminI18n.rowAdded);
         });
 
         rows.addEventListener('click', function (event) {
             if (!event.target.classList.contains('navi-faq-remove-row')) {
+                return;
+            }
+            if (!window.confirm(naviFaqAdminI18n.confirmRemove)) {
                 return;
             }
             var row = event.target.closest('.navi-faq-row');

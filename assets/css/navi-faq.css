@@ -234,3 +234,24 @@
     font-weight: 400;
     color: #666;
 }
+
+.navi-faq-field-optional {
+    font-weight: 400;
+    color: #888;
+}
+
+.navi-faq-field .description {
+    margin: 2px 0 6px;
+    font-size: 0.8125rem;
+    color: #666;
+}
+
+.navi-faq-char-count {
+    margin: 6px 0 0;
+    font-size: 0.8125rem;
+    color: #666;
+}
+
+.navi-faq-char-count.is-long {
+    color: #b32d2e;
+}
