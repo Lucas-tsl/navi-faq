@@ -151,6 +151,17 @@ function navi_faq_render_editor_ui( array $items, $field_prefix ) {
         </div>
         <p><button type="button" class="button navi-faq-add-row">+ <?php esc_html_e( 'Ajouter une question', 'navi-faq' ); ?></button></p>
         <p class="description"><?php esc_html_e( 'Donnez le même thème à plusieurs questions pour les regrouper sous un même onglet en front (ex. "Livraison" sur 3 questions). Laissez vide pour un simple accordéon sans onglets.', 'navi-faq' ); ?></p>
+        <?php
+        // Zone d'annonce dédiée (WCAG 4.1.3, statut) plutôt qu'un aria-live
+        // posé directement sur .navi-faq-rows : sur cette dernière, un
+        // lecteur d'écran annoncerait tout le contenu de chaque nouvelle
+        // ligne (libellés, éditeur TinyMCE...) à chaque ajout, bien trop
+        // verbeux — voir "Question ajoutée"/"Question supprimée" dans
+        // assets/js/navi-faq-admin.js. .screen-reader-text : classe
+        // utilitaire fournie par WordPress lui-même en admin, pas besoin de
+        // la redéfinir.
+        ?>
+        <div class="navi-faq-status screen-reader-text" aria-live="polite" aria-atomic="true"></div>
     </div>
     <?php
 }
@@ -178,11 +189,14 @@ function navi_faq_editor_tinymce_settings() {
 }
 
 function navi_faq_render_row_markup( $field_prefix, $number, $question = '', $answer = '', $group = '' ) {
-    $editor_id = 'navi_faq_answer_' . $number;
+    $editor_id   = 'navi_faq_answer_' . $number;
+    $group_id    = $field_prefix . '_group_' . $number;
+    $question_id = $field_prefix . '_question_' . $number;
+    $title_id    = $field_prefix . '_row_title_' . $number;
     ?>
-    <div class="navi-faq-row">
+    <div class="navi-faq-row" role="group" aria-labelledby="<?php echo esc_attr( $title_id ); ?>">
         <div class="navi-faq-row-header">
-            <span class="navi-faq-row-title">
+            <span class="navi-faq-row-title" id="<?php echo esc_attr( $title_id ); ?>">
                 <?php
                 /* translators: %d: numéro de la question dans la liste */
                 echo esc_html( sprintf( __( 'Question #%d', 'navi-faq' ), $number ) );
@@ -192,15 +206,16 @@ function navi_faq_render_row_markup( $field_prefix, $number, $question = '', $an
         </div>
         <div class="navi-faq-row-body">
             <p class="navi-faq-field navi-faq-field-group">
-                <label><?php esc_html_e( 'Thème (optionnel)', 'navi-faq' ); ?></label>
-                <input type="text" class="widefat" list="navi-faq-themes-datalist" name="<?php echo esc_attr( $field_prefix ); ?>_group[]" value="<?php echo esc_attr( $group ); ?>" placeholder="<?php esc_attr_e( 'ex. Livraison, Nos parfums…', 'navi-faq' ); ?>" />
+                <label for="<?php echo esc_attr( $group_id ); ?>"><?php esc_html_e( 'Thème (optionnel)', 'navi-faq' ); ?></label>
+                <input type="text" class="widefat" id="<?php echo esc_attr( $group_id ); ?>" list="navi-faq-themes-datalist" name="<?php echo esc_attr( $field_prefix ); ?>_group[]" value="<?php echo esc_attr( $group ); ?>" placeholder="<?php esc_attr_e( 'ex. Livraison, Nos parfums…', 'navi-faq' ); ?>" />
             </p>
             <p class="navi-faq-field">
-                <label for="<?php echo esc_attr( $field_prefix ); ?>_question_<?php echo (int) $number; ?>"><?php esc_html_e( 'Question', 'navi-faq' ); ?></label>
-                <input type="text" class="widefat" id="<?php echo esc_attr( $field_prefix ); ?>_question_<?php echo (int) $number; ?>" name="<?php echo esc_attr( $field_prefix ); ?>_question[]" value="<?php echo esc_attr( $question ); ?>" />
+                <label for="<?php echo esc_attr( $question_id ); ?>"><?php esc_html_e( 'Question', 'navi-faq' ); ?></label>
+                <input type="text" class="widefat" id="<?php echo esc_attr( $question_id ); ?>" name="<?php echo esc_attr( $field_prefix ); ?>_question[]" value="<?php echo esc_attr( $question ); ?>" />
             </p>
             <div class="navi-faq-field navi-faq-field-answer">
                 <label for="<?php echo esc_attr( $editor_id ); ?>"><?php esc_html_e( 'Réponse', 'navi-faq' ); ?></label>
+                <p class="description" id="<?php echo esc_attr( $editor_id ); ?>_hint"><?php esc_html_e( 'Le bouton lien de la barre d’outils permet de rechercher directement une page ou un produit du site, ou de coller une URL externe.', 'navi-faq' ); ?></p>
                 <?php
                 wp_editor(
                     $answer,
@@ -245,6 +260,10 @@ function navi_faq_enqueue_admin_assets( $hook_suffix ) {
         'remove'           => __( 'Supprimer cette question', 'navi-faq' ),
         /* translators: %d sera remplacé par le numéro de la question (JS, voir assets/js/navi-faq-admin.js). */
         'questionNumber'   => __( 'Question #%d', 'navi-faq' ),
+        // Annoncées via la zone de statut (WCAG 4.1.3), voir
+        // navi_faq_render_editor_ui() (.navi-faq-status) ci-dessus.
+        'rowAdded'         => __( 'Question ajoutée.', 'navi-faq' ),
+        'rowRemoved'       => __( 'Question supprimée.', 'navi-faq' ),
     ) );
     wp_localize_script( 'navi-faq-admin', 'naviFaqEditorSettings', array(
         // Doit rester en phase avec navi_faq_editor_tinymce_settings() —
