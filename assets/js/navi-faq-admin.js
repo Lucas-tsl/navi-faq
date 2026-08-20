@@ -4,8 +4,9 @@
         var emptyLabel = editor.getAttribute('data-empty-label') || '';
         var rows = editor.querySelector('.navi-faq-rows');
         var addBtn = editor.querySelector('.navi-faq-add-row');
+        var nextNumber = parseInt(editor.getAttribute('data-next-number'), 10) || 1;
 
-        function renumber() {
+        function renumberTitles() {
             var titles = rows.querySelectorAll('.navi-faq-row-title');
             titles.forEach(function (title, index) {
                 title.textContent = naviFaqAdminI18n.questionNumber.replace('%d', index + 1);
@@ -24,7 +25,31 @@
             }
         }
 
-        function makeRow() {
+        // wp.editor.initialize()/remove() : instancie/détruit un véritable
+        // éditeur TinyMCE sur la ligne, avec les mêmes réglages que
+        // wp_editor() côté PHP (voir naviFaqEditorSettings, localisé depuis
+        // navi_faq_editor_tinymce_settings() dans admin.php) — pour que la
+        // barre d'outils soit identique, qu'une ligne vienne du serveur ou
+        // d'un clic sur "Ajouter une question".
+        function initEditor(editorId) {
+            if (typeof wp === 'undefined' || !wp.editor) {
+                return;
+            }
+            wp.editor.initialize(editorId, {
+                tinymce: naviFaqEditorSettings.tinymce,
+                quicktags: naviFaqEditorSettings.quicktags,
+                mediaButtons: naviFaqEditorSettings.mediaButtons
+            });
+        }
+
+        function removeEditor(editorId) {
+            if (typeof wp !== 'undefined' && wp.editor) {
+                wp.editor.remove(editorId);
+            }
+        }
+
+        function makeRow(number) {
+            var editorId = 'navi_faq_answer_' + number;
             var row = document.createElement('div');
             row.className = 'navi-faq-row';
             row.innerHTML =
@@ -41,22 +66,23 @@
                         '<label>' + naviFaqAdminI18n.question + '</label>' +
                         '<input type="text" class="widefat" name="' + prefix + '_question[]" />' +
                     '</p>' +
-                    '<p class="navi-faq-field">' +
-                        '<label>' + naviFaqAdminI18n.answer + '</label>' +
-                        '<textarea class="widefat" rows="3" name="' + prefix + '_answer[]"></textarea>' +
-                    '</p>' +
+                    '<div class="navi-faq-field navi-faq-field-answer">' +
+                        '<label for="' + editorId + '">' + naviFaqAdminI18n.answer + '</label>' +
+                        '<textarea id="' + editorId + '" class="widefat" rows="5" name="' + prefix + '_answer[]"></textarea>' +
+                    '</div>' +
                 '</div>';
             return row;
         }
 
         addBtn.addEventListener('click', function () {
-            var empty = rows.querySelector('.navi-faq-empty');
-            if (empty) {
-                empty.remove();
-            }
-            var row = makeRow();
+            var row = makeRow(nextNumber);
+            nextNumber++;
             rows.appendChild(row);
-            renumber();
+            renumberTitles();
+
+            var editorId = row.querySelector('textarea').id;
+            initEditor(editorId);
+
             var questionField = row.querySelector('input[name$="_question[]"]');
             if (questionField) {
                 questionField.focus();
@@ -64,12 +90,18 @@
         });
 
         rows.addEventListener('click', function (event) {
-            if (event.target.classList.contains('navi-faq-remove-row')) {
-                event.target.closest('.navi-faq-row').remove();
-                renumber();
+            if (!event.target.classList.contains('navi-faq-remove-row')) {
+                return;
             }
+            var row = event.target.closest('.navi-faq-row');
+            var textarea = row.querySelector('textarea[id^="navi_faq_answer_"]');
+            if (textarea) {
+                removeEditor(textarea.id);
+            }
+            row.remove();
+            renumberTitles();
         });
 
-        renumber();
+        renumberTitles();
     });
 })();

@@ -10,7 +10,9 @@ module.exports = [
       globals: {
         window: "readonly",
         document: "readonly",
+        wp: "readonly",
         naviFaqAdminI18n: "readonly",
+        naviFaqEditorSettings: "readonly",
       },
     },
   },
