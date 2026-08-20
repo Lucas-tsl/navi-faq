@@ -145,13 +145,25 @@ function navi_faq_render_accordion_html( array $items ) {
  * lecteurs d'écran déjà gérés nativement), qui fonctionne même si le JS ne
  * charge pas — amélioration par rapport à un accordéon piloté uniquement en
  * JS.
+ *
+ * id="faq-N" (compteur global à la requête, voir navi_faq_next_anchor_id())
+ * donne à chaque question une ancre partageable (#faq-3) — un lien vers une
+ * réponse précise plutôt que vers la page entière. Repérée par
+ * assets/js/navi-faq-front.js au chargement pour déplier automatiquement la
+ * bonne question (et activer son onglet si elle est dans un panneau caché).
  */
 function navi_faq_render_item_html( array $item ) {
-    $out  = '<details class="navi-faq-item">';
+    $out  = '<details class="navi-faq-item" id="' . esc_attr( navi_faq_next_anchor_id() ) . '">';
     $out .= '<summary class="navi-faq-question">' . esc_html( $item['question'] ) . '</summary>';
     $out .= '<div class="navi-faq-answer">' . wp_kses_post( wpautop( $item['answer'] ) ) . '</div>';
     $out .= '</details>';
     return $out;
+}
+
+function navi_faq_next_anchor_id() {
+    static $counter = 0;
+    $counter++;
+    return 'faq-' . $counter;
 }
 
 /**
