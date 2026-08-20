@@ -276,3 +276,29 @@
 .navi-faq-duplicate-status.is-error {
     color: #b32d2e;
 }
+
+.navi-faq-import-export {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #ddd;
+    max-width: 640px;
+}
+
+.navi-faq-import-export h4 {
+    margin: 0 0 4px;
+}
+
+.navi-faq-import-textarea {
+    font-family: Consolas, Monaco, monospace;
+    font-size: 0.8125rem;
+}
+
+.navi-faq-import-status {
+    margin: 8px 0 0;
+    font-size: 0.8125rem;
+    color: #666;
+}
+
+.navi-faq-import-status.is-error {
+    color: #b32d2e;
+}
