@@ -19,6 +19,7 @@ module.exports = [
         URL: "readonly",
         MutationObserver: "readonly",
         Event: "readonly",
+        FileReader: "readonly",
         naviFaqAdminI18n: "readonly",
         naviFaqEditorSettings: "readonly",
       },
