@@ -17,6 +17,8 @@ module.exports = [
         FormData: "readonly",
         Blob: "readonly",
         URL: "readonly",
+        MutationObserver: "readonly",
+        Event: "readonly",
         naviFaqAdminI18n: "readonly",
         naviFaqEditorSettings: "readonly",
       },

@@ -186,25 +186,64 @@
 
 .navi-faq-row-header {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: space-between;
-    padding: 8px 12px;
     background: #f6f7f7;
     border-bottom: 1px solid #ddd;
+}
+
+.navi-faq-row-toggle {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    text-align: left;
+    font-size: inherit;
+}
+
+.navi-faq-row-toggle:hover {
+    background: #eee;
+}
+
+.navi-faq-row-toggle:focus-visible {
+    outline: 2px solid #111;
+    outline-offset: -2px;
 }
 
 .navi-faq-row-title {
     font-weight: 700;
 }
 
+/* Chevron identique dans l'esprit à celui du front (coin de bordure
+   pivoté), voir .navi-faq-question::after plus haut. */
+.navi-faq-row-chevron {
+    flex: 0 0 auto;
+    width: 7px;
+    height: 7px;
+    border-right: 1.5px solid #666;
+    border-bottom: 1.5px solid #666;
+    transform: rotate(-45deg);
+    transition: transform 0.2s ease;
+}
+
+.navi-faq-row-toggle[aria-expanded="true"] .navi-faq-row-chevron {
+    transform: rotate(45deg);
+}
+
 .navi-faq-remove-row {
+    flex: 0 0 auto;
     background: none;
     border: none;
     cursor: pointer;
     color: #a00;
     font-size: 1.25rem;
     line-height: 1;
-    padding: 0 4px;
+    padding: 0 12px;
 }
 
 .navi-faq-remove-row:hover {
@@ -213,6 +252,10 @@
 
 .navi-faq-row-body {
     padding: 12px;
+}
+
+.navi-faq-row-body[hidden] {
+    display: none;
 }
 
 .navi-faq-field {
