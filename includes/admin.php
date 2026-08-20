@@ -19,7 +19,7 @@ function navi_faq_register_meta_box() {
 
 function navi_faq_render_meta_box( $post ) {
     wp_nonce_field( 'navi_faq_save_' . $post->ID, 'navi_faq_nonce' );
-    navi_faq_render_editor_ui( navi_faq_get_for_post( $post->ID ), 'navi_faq_post' );
+    navi_faq_render_editor_ui( navi_faq_get_for_post( $post->ID ), 'navi_faq_post', 'post', $post->ID );
 }
 
 // -------------------- Produits (onglet "Données produit") --------------------
@@ -52,7 +52,7 @@ function navi_faq_render_product_data_panel() {
         <div class="options_group" style="padding: 12px 20px;">
             <?php
             wp_nonce_field( 'navi_faq_save_' . $post->ID, 'navi_faq_nonce' );
-            navi_faq_render_editor_ui( navi_faq_get_for_post( $post->ID ), 'navi_faq_post' );
+            navi_faq_render_editor_ui( navi_faq_get_for_post( $post->ID ), 'navi_faq_post', 'post', $post->ID );
             ?>
         </div>
     </div>
@@ -100,7 +100,7 @@ function navi_faq_render_term_field( $term ) {
         <td>
             <?php
             wp_nonce_field( 'navi_faq_save_term_' . $term->term_id, 'navi_faq_term_nonce' );
-            navi_faq_render_editor_ui( navi_faq_get_for_term( $term->term_id ), 'navi_faq_term' );
+            navi_faq_render_editor_ui( navi_faq_get_for_term( $term->term_id ), 'navi_faq_term', 'term', $term->term_id );
             ?>
             <p class="description"><?php esc_html_e( 'Affichées automatiquement en haut de la page de cette catégorie sur le site.', 'navi-faq' ); ?></p>
         </td>
@@ -129,7 +129,7 @@ function navi_faq_save_term_meta( $term_id ) {
 // de champs à la soumission) : évite de dupliquer le HTML des rangées et le
 // JS d'ajout/suppression entre le metabox post et le formulaire de terme.
 
-function navi_faq_render_editor_ui( array $items, $field_prefix ) {
+function navi_faq_render_editor_ui( array $items, $field_prefix, $source_type = '', $source_id = 0 ) {
     $known_themes = navi_faq_get_known_themes();
     ?>
     <div class="navi-faq-editor" data-prefix="<?php echo esc_attr( $field_prefix ); ?>" data-empty-label="<?php esc_attr_e( 'Aucune question pour l’instant.', 'navi-faq' ); ?>" data-next-number="<?php echo (int) ( count( $items ) + 1 ); ?>">
@@ -161,8 +161,76 @@ function navi_faq_render_editor_ui( array $items, $field_prefix ) {
         // la redéfinir.
         ?>
         <div class="navi-faq-status screen-reader-text" aria-live="polite" aria-atomic="true"></div>
+        <?php if ( $source_id ) : ?>
+            <?php navi_faq_render_duplicate_ui( $source_type, $source_id ); ?>
+        <?php endif; ?>
     </div>
     <?php
+}
+
+/**
+ * "Dupliquer vers…" : copie le jeu de FAQ ENREGISTRÉ (pas le formulaire en
+ * cours d'édition, pour éviter de devoir synchroniser le contenu TinyMCE
+ * pas encore soumis) d'une entité vers une autre — utile pour des produits
+ * très proches (variantes) qui partagent les mêmes questions. Traité en
+ * AJAX (navi_faq_ajax_duplicate()) plutôt qu'à la sauvegarde du formulaire :
+ * la cible n'a aucun rapport avec l'entité en cours d'édition.
+ */
+function navi_faq_render_duplicate_ui( $source_type, $source_id ) {
+    $targets = navi_faq_get_duplicate_targets( $source_type, $source_id );
+    if ( empty( $targets ) ) {
+        return;
+    }
+    ?>
+    <div class="navi-faq-duplicate">
+        <h4><?php esc_html_e( 'Dupliquer ces FAQ vers…', 'navi-faq' ); ?></h4>
+        <p class="description"><?php esc_html_e( 'Remplace les FAQ existantes de la destination par celles actuellement enregistrées ici — pensez à sauvegarder vos modifications avant de dupliquer.', 'navi-faq' ); ?></p>
+        <p>
+            <label class="screen-reader-text" for="<?php echo esc_attr( $source_type . '_' . $source_id ); ?>_duplicate_target"><?php esc_html_e( 'Dupliquer vers', 'navi-faq' ); ?></label>
+            <select class="navi-faq-duplicate-target" id="<?php echo esc_attr( $source_type . '_' . $source_id ); ?>_duplicate_target">
+                <option value=""><?php esc_html_e( '— Choisir une destination —', 'navi-faq' ); ?></option>
+                <?php foreach ( $targets as $target ) : ?>
+                    <option value="<?php echo esc_attr( $target['value'] ); ?>"><?php echo esc_html( $target['label'] ); ?></option>
+                <?php endforeach; ?>
+            </select>
+            <button type="button" class="button navi-faq-duplicate-btn" data-source="<?php echo esc_attr( navi_faq_entity_key( $source_type, $source_id ) ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( 'navi_faq_duplicate' ) ); ?>"><?php esc_html_e( 'Dupliquer', 'navi-faq' ); ?></button>
+        </p>
+        <p class="navi-faq-duplicate-status" role="status"></p>
+    </div>
+    <?php
+}
+
+add_action( 'wp_ajax_navi_faq_duplicate', 'navi_faq_ajax_duplicate' );
+function navi_faq_ajax_duplicate() {
+    check_ajax_referer( 'navi_faq_duplicate', 'nonce' );
+
+    $source = isset( $_POST['source'] ) ? sanitize_text_field( wp_unslash( $_POST['source'] ) ) : '';
+    $target = isset( $_POST['target'] ) ? sanitize_text_field( wp_unslash( $_POST['target'] ) ) : '';
+
+    list( $source_type, $source_id ) = navi_faq_parse_entity_key( $source );
+    list( $target_type, $target_id ) = navi_faq_parse_entity_key( $target );
+
+    if ( ! $source_type || ! $target_type ) {
+        wp_send_json_error( array( 'message' => __( 'Destination invalide.', 'navi-faq' ) ) );
+    }
+
+    if ( ! navi_faq_current_user_can_edit_entity( $source_type, $source_id )
+        || ! navi_faq_current_user_can_edit_entity( $target_type, $target_id ) ) {
+        wp_send_json_error( array( 'message' => __( 'Vous n’avez pas les droits nécessaires sur la source ou la destination.', 'navi-faq' ) ) );
+    }
+
+    $items = ( 'post' === $source_type ) ? navi_faq_get_for_post( $source_id ) : navi_faq_get_for_term( $source_id );
+
+    if ( 'post' === $target_type ) {
+        navi_faq_save_for_post( $target_id, $items );
+    } else {
+        navi_faq_save_for_term( $target_id, $items );
+    }
+
+    wp_send_json_success( array(
+        /* translators: %d: nombre de questions dupliquées. */
+        'message' => sprintf( _n( '%d question dupliquée.', '%d questions dupliquées.', count( $items ), 'navi-faq' ), count( $items ) ),
+    ) );
 }
 
 /**
@@ -272,6 +340,10 @@ function navi_faq_enqueue_admin_assets( $hook_suffix ) {
         'charCount'        => __( '%d caractères', 'navi-faq' ),
         /* translators: %d sera remplacé par le nombre de caractères (texte brut) de la réponse. */
         'charCountLong'    => __( '%d caractères — plutôt long pour un extrait Google (environ 300 recommandés).', 'navi-faq' ),
+        'duplicateChooseTarget' => __( 'Choisissez d’abord une destination.', 'navi-faq' ),
+        'duplicateConfirm'      => __( 'Remplacer les FAQ de la destination par celles-ci ?', 'navi-faq' ),
+        'duplicateInProgress'   => __( 'Duplication en cours…', 'navi-faq' ),
+        'duplicateError'        => __( 'Une erreur est survenue, réessayez.', 'navi-faq' ),
     ) );
     wp_localize_script( 'navi-faq-admin', 'naviFaqEditorSettings', array(
         // Doit rester en phase avec navi_faq_editor_tinymce_settings() —
