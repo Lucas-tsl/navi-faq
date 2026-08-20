@@ -146,7 +146,7 @@ function navi_faq_render_editor_ui( array $items, $field_prefix, $source_type = 
                 <p class="navi-faq-empty"><?php esc_html_e( 'Aucune question pour l’instant.', 'navi-faq' ); ?></p>
             <?php endif; ?>
             <?php foreach ( $items as $index => $item ) : ?>
-                <?php navi_faq_render_row_markup( $field_prefix, $index + 1, $item['question'], $item['answer'], isset( $item['group'] ) ? $item['group'] : '' ); ?>
+                <?php navi_faq_render_row_markup( $field_prefix, $index + 1, $item['question'], $item['answer'], isset( $item['group'] ) ? $item['group'] : '', 0 === $index ); ?>
             <?php endforeach; ?>
         </div>
         <p><button type="button" class="button navi-faq-add-row">+ <?php esc_html_e( 'Ajouter une question', 'navi-faq' ); ?></button></p>
@@ -281,23 +281,37 @@ function navi_faq_editor_tinymce_settings() {
     );
 }
 
-function navi_faq_render_row_markup( $field_prefix, $number, $question = '', $answer = '', $group = '' ) {
+/**
+ * Rangée repliable — même principe que l'accordéon front (voir
+ * navi_faq_render_item_html(), frontend.php) : gagner de la place quand il
+ * y a plusieurs questions. $open détermine l'état initial (voir
+ * navi_faq_render_editor_ui(), qui ouvre uniquement la première ligne au
+ * chargement) ; le pli/dépli lui-même est géré en JS (attribut "hidden" du
+ * corps + aria-expanded du bouton, voir assets/js/navi-faq-admin.js) plutôt
+ * qu'en <details> natif, pour ne pas avoir deux boutons interactifs
+ * imbriqués (bascule + suppression) dans un même <summary>.
+ */
+function navi_faq_render_row_markup( $field_prefix, $number, $question = '', $answer = '', $group = '', $open = false ) {
     $editor_id   = 'navi_faq_answer_' . $number;
     $group_id    = $field_prefix . '_group_' . $number;
     $question_id = $field_prefix . '_question_' . $number;
     $title_id    = $field_prefix . '_row_title_' . $number;
+    $body_id     = $field_prefix . '_row_body_' . $number;
     ?>
     <div class="navi-faq-row" role="group" aria-labelledby="<?php echo esc_attr( $title_id ); ?>">
         <div class="navi-faq-row-header">
-            <span class="navi-faq-row-title" id="<?php echo esc_attr( $title_id ); ?>">
-                <?php
-                /* translators: %d: numéro de la question dans la liste */
-                echo esc_html( sprintf( __( 'Question #%d', 'navi-faq' ), $number ) );
-                ?>
-            </span>
+            <button type="button" class="navi-faq-row-toggle" aria-expanded="<?php echo $open ? 'true' : 'false'; ?>" aria-controls="<?php echo esc_attr( $body_id ); ?>">
+                <span class="navi-faq-row-title" id="<?php echo esc_attr( $title_id ); ?>">
+                    <?php
+                    /* translators: %d: numéro de la question dans la liste */
+                    echo esc_html( sprintf( __( 'Question #%d', 'navi-faq' ), $number ) );
+                    ?>
+                </span>
+                <span class="navi-faq-row-chevron" aria-hidden="true"></span>
+            </button>
             <button type="button" class="navi-faq-remove-row" aria-label="<?php esc_attr_e( 'Supprimer cette question', 'navi-faq' ); ?>">&times;</button>
         </div>
-        <div class="navi-faq-row-body">
+        <div class="navi-faq-row-body" id="<?php echo esc_attr( $body_id ); ?>" <?php echo $open ? '' : 'hidden'; ?>>
             <p class="navi-faq-field navi-faq-field-group">
                 <label for="<?php echo esc_attr( $group_id ); ?>"><?php esc_html_e( 'Thème', 'navi-faq' ); ?> <span class="navi-faq-field-optional"><?php esc_html_e( '(optionnel)', 'navi-faq' ); ?></span></label>
                 <input type="text" class="widefat" id="<?php echo esc_attr( $group_id ); ?>" list="navi-faq-themes-datalist" name="<?php echo esc_attr( $field_prefix ); ?>_group[]" value="<?php echo esc_attr( $group ); ?>" placeholder="<?php esc_attr_e( 'ex. Livraison, Nos parfums…', 'navi-faq' ); ?>" />
@@ -310,7 +324,7 @@ function navi_faq_render_row_markup( $field_prefix, $number, $question = '', $an
             </p>
             <div class="navi-faq-field navi-faq-field-answer">
                 <label for="<?php echo esc_attr( $editor_id ); ?>"><?php esc_html_e( 'Réponse', 'navi-faq' ); ?></label>
-                <p class="description"><?php esc_html_e( 'Affichée sous la question une fois dépliée. Le bouton lien de la barre d’outils permet de rechercher directement une page ou un produit du site, ou de coller une URL externe.', 'navi-faq' ); ?></p>
+                <p class="description"><?php esc_html_e( 'Le texte que verra le client. Pour ajouter un lien, utilisez le bouton lien de la barre d’outils.', 'navi-faq' ); ?></p>
                 <?php
                 wp_editor(
                     $answer,
