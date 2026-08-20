@@ -164,4 +164,52 @@
 
         renumberTitles();
     });
+
+    // --- "Dupliquer vers…" : appel AJAX, la sauvegarde est immédiate côté
+    // serveur (voir navi_faq_ajax_duplicate(), admin.php) — n'affecte pas
+    // le formulaire actuellement ouvert, seulement la destination choisie. ---
+    document.querySelectorAll('.navi-faq-duplicate-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var wrapper = btn.closest('.navi-faq-duplicate');
+            var select = wrapper.querySelector('.navi-faq-duplicate-target');
+            var status = wrapper.querySelector('.navi-faq-duplicate-status');
+            var target = select.value;
+
+            if (!target) {
+                status.textContent = naviFaqAdminI18n.duplicateChooseTarget;
+                status.classList.remove('is-error');
+                return;
+            }
+            if (!window.confirm(naviFaqAdminI18n.duplicateConfirm)) {
+                return;
+            }
+
+            btn.disabled = true;
+            status.classList.remove('is-error');
+            status.textContent = naviFaqAdminI18n.duplicateInProgress;
+
+            var data = new FormData();
+            data.append('action', 'navi_faq_duplicate');
+            data.append('nonce', btn.getAttribute('data-nonce'));
+            data.append('source', btn.getAttribute('data-source'));
+            data.append('target', target);
+
+            fetch(ajaxurl, { method: 'POST', credentials: 'same-origin', body: data })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (result) {
+                    var message = result.data && result.data.message ? result.data.message : '';
+                    status.textContent = message;
+                    status.classList.toggle('is-error', !result.success);
+                })
+                .catch(function () {
+                    status.textContent = naviFaqAdminI18n.duplicateError;
+                    status.classList.add('is-error');
+                })
+                .finally(function () {
+                    btn.disabled = false;
+                });
+        });
+    });
 })();
