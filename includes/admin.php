@@ -161,9 +161,35 @@ function navi_faq_render_editor_ui( array $items, $field_prefix, $source_type = 
         // la redéfinir.
         ?>
         <div class="navi-faq-status screen-reader-text" aria-live="polite" aria-atomic="true"></div>
+        <?php navi_faq_render_import_export_ui(); ?>
         <?php if ( $source_id ) : ?>
             <?php navi_faq_render_duplicate_ui( $source_type, $source_id ); ?>
         <?php endif; ?>
+    </div>
+    <?php
+}
+
+/**
+ * Import/export JSON — opère sur le formulaire actuellement affiché (y
+ * compris les modifications pas encore enregistrées), entièrement côté
+ * client (voir assets/js/navi-faq-admin.js) : aucun aller-retour serveur,
+ * contrairement à "Dupliquer vers…" qui copie un jeu déjà en base. Utile
+ * pour migrer depuis un autre plugin FAQ ou sauvegarder/réutiliser un jeu
+ * de questions en dehors de WordPress.
+ */
+function navi_faq_render_import_export_ui() {
+    $textarea_id = wp_unique_id( 'navi_faq_import_' );
+    ?>
+    <div class="navi-faq-import-export">
+        <h4><?php esc_html_e( 'Importer / Exporter (JSON)', 'navi-faq' ); ?></h4>
+        <p class="description"><?php esc_html_e( 'Exporter récupère les questions telles qu’affichées ici, y compris non enregistrées. Importer remplace toutes les questions du formulaire par le contenu collé ci-dessous (format généré par Exporter).', 'navi-faq' ); ?></p>
+        <p><button type="button" class="button navi-faq-export-btn"><?php esc_html_e( 'Exporter en JSON', 'navi-faq' ); ?></button></p>
+        <p class="navi-faq-field">
+            <label class="screen-reader-text" for="<?php echo esc_attr( $textarea_id ); ?>"><?php esc_html_e( 'JSON à importer', 'navi-faq' ); ?></label>
+            <textarea class="widefat navi-faq-import-textarea" id="<?php echo esc_attr( $textarea_id ); ?>" rows="4" placeholder="[{&quot;question&quot;:&quot;…&quot;,&quot;answer&quot;:&quot;…&quot;,&quot;group&quot;:&quot;…&quot;}]"></textarea>
+        </p>
+        <p><button type="button" class="button navi-faq-import-btn"><?php esc_html_e( 'Importer', 'navi-faq' ); ?></button></p>
+        <p class="navi-faq-import-status" role="status"></p>
     </div>
     <?php
 }
@@ -344,6 +370,12 @@ function navi_faq_enqueue_admin_assets( $hook_suffix ) {
         'duplicateConfirm'      => __( 'Remplacer les FAQ de la destination par celles-ci ?', 'navi-faq' ),
         'duplicateInProgress'   => __( 'Duplication en cours…', 'navi-faq' ),
         'duplicateError'        => __( 'Une erreur est survenue, réessayez.', 'navi-faq' ),
+        'importInvalidJson'  => __( 'JSON invalide — vérifiez le format collé.', 'navi-faq' ),
+        'importEmpty'        => __( 'Aucune question valide trouvée dans ce JSON.', 'navi-faq' ),
+        'importConfirm'      => __( 'Remplacer toutes les questions actuelles du formulaire par celles importées ?', 'navi-faq' ),
+        /* translators: %d sera remplacé par le nombre de questions importées. */
+        'importSuccess'      => __( '%d question(s) importée(s). Pensez à enregistrer pour conserver ce résultat.', 'navi-faq' ),
+        'exportEmpty'        => __( 'Aucune question à exporter pour l’instant.', 'navi-faq' ),
     ) );
     wp_localize_script( 'navi-faq-admin', 'naviFaqEditorSettings', array(
         // Doit rester en phase avec navi_faq_editor_tinymce_settings() —
