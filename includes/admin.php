@@ -60,15 +60,27 @@ function navi_faq_register_term_hooks() {
 }
 
 function navi_faq_render_term_field( $term ) {
+    // Un écran d'édition de terme n'a pas de add_meta_box() (contrairement
+    // aux fiches produit, voir navi_panel_render(), navi-panel.php) : ce
+    // <div class="navi-panel-box"> reproduit juste l'habillage visuel d'un
+    // postbox natif WordPress (bordure + bandeau de titre "Navi"), pour que
+    // les deux écrans présentent la FAQ dans une "boîte" au même style.
     ?>
     <tr class="form-field">
         <th scope="row"><label><?php esc_html_e( 'FAQ (Navi)', 'navi-faq' ); ?></label></th>
         <td>
-            <?php
-            wp_nonce_field( 'navi_faq_save_term_' . $term->term_id, 'navi_faq_term_nonce' );
-            navi_faq_render_editor_ui( navi_faq_get_for_term( $term->term_id ), 'navi_faq_term', 'term', $term->term_id );
-            ?>
-            <p class="description"><?php esc_html_e( 'Affichées automatiquement en haut de la page de cette catégorie sur le site.', 'navi-faq' ); ?></p>
+            <div class="navi-panel-box">
+                <div class="navi-panel-box-header">
+                    <h3><?php esc_html_e( 'Navi', 'navi-faq' ); ?></h3>
+                </div>
+                <div class="navi-panel-box-body">
+                    <?php
+                    wp_nonce_field( 'navi_faq_save_term_' . $term->term_id, 'navi_faq_term_nonce' );
+                    navi_faq_render_editor_ui( navi_faq_get_for_term( $term->term_id ), 'navi_faq_term', 'term', $term->term_id );
+                    ?>
+                    <p class="description"><?php esc_html_e( 'Affichées automatiquement en haut de la page de cette catégorie sur le site.', 'navi-faq' ); ?></p>
+                </div>
+            </div>
         </td>
     </tr>
     <?php
