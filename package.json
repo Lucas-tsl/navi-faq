@@ -1,0 +1,17 @@
+{
+  "name": "navi-faq",
+  "version": "0.1.0",
+  "private": true,
+  "description": "FAQ (questions/réponses) sur les articles, pages, produits et catégories de produits WooCommerce, avec schéma FAQPage (JSON-LD) et regroupement par thème.",
+  "scripts": {
+    "lint:js": "eslint assets/js",
+    "lint:css": "stylelint \"assets/css/**/*.css\"",
+    "lint": "npm run lint:js && npm run lint:css"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.9.0",
+    "eslint": "^9.9.0",
+    "stylelint": "^16.9.0",
+    "stylelint-config-standard": "^36.0.1"
+  }
+}
