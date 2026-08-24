@@ -7,6 +7,7 @@ regroupement optionnel des questions par thème (affichage en onglets).
 Développé comme plugin compagnon de [Saito Navi](https://github.com/Lucas-tsl/navi-wordpress).
 
 📖 **[Documentation complète (captures d'écran + explications)](https://lucas-tsl.github.io/navi-faq/)**
+([version Notion](https://rectangular-tiara-ce3.notion.site/Navi-FAQ-Documentation-3c61e90fa69a81df9caad08c42242bf7))
 
 ## Pourquoi ce plugin
 
