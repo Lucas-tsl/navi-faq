@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navi FAQ — Documentation</title>
+<meta name="description" content="Documentation complète du plugin WordPress/WooCommerce Navi FAQ : édition, duplication, import/export, affichage front, SEO.">
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-alt: #f6f7f7;
+    --text: #1d2327;
+    --text-muted: #555;
+    --border: #dcdcde;
+    --accent: #2271b1;
+    --accent-bg: #eaf2fa;
+    --warn-bg: #fdf3e0;
+    --warn-border: #e0a63c;
+    --note-bg: #f0f6fc;
+    --code-bg: #f6f7f7;
+    --shadow: 0 1px 2px rgba(0,0,0,.06);
+    --max-width: 820px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.65;
+  }
+  header.hero {
+    background: linear-gradient(135deg, #1d2327, #2c3338);
+    color: #fff;
+    padding: 56px 24px 40px;
+    text-align: center;
+  }
+  header.hero .icon { font-size: 2.5rem; margin-bottom: 8px; }
+  header.hero h1 { margin: 0 0 8px; font-size: 2rem; }
+  header.hero p { margin: 0 auto; max-width: 640px; color: #cbd0d3; font-size: 1.05rem; }
+  header.hero .badges { margin-top: 20px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  header.hero .badge {
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 999px;
+    padding: 4px 14px;
+    font-size: 0.8125rem;
+  }
+  header.hero a.repo-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: #fff;
+    background: var(--accent);
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+  header.hero a.repo-link:hover { background: #1a5a8f; }
+
+  main {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  nav.toc {
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 48px;
+  }
+  nav.toc h2 { margin: 0 0 12px; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); }
+  nav.toc ol { margin: 0; padding-left: 20px; columns: 2; column-gap: 24px; }
+  nav.toc li { margin-bottom: 6px; break-inside: avoid; }
+  nav.toc a { color: var(--accent); text-decoration: none; font-size: 0.9375rem; }
+  nav.toc a:hover { text-decoration: underline; }
+
+  section { margin-bottom: 56px; scroll-margin-top: 24px; }
+  section h2 {
+    font-size: 1.5rem;
+    margin: 0 0 4px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+  }
+  section h3 { font-size: 1.125rem; margin: 28px 0 8px; }
+  section p { color: var(--text); }
+  section p.lead { color: var(--text-muted); }
+
+  code {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 0.875em;
+    font-family: Consolas, Monaco, "Courier New", monospace;
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-size: 0.875rem;
+  }
+  pre code { background: none; border: none; padding: 0; }
+
+  .callout {
+    display: flex;
+    gap: 12px;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 18px 0;
+    font-size: 0.9375rem;
+  }
+  .callout .emoji { flex: 0 0 auto; font-size: 1.15rem; line-height: 1.4; }
+  .callout.note { background: var(--note-bg); border: 1px solid #c9dff2; }
+  .callout.warn { background: var(--warn-bg); border: 1px solid var(--warn-border); }
+  .callout.info { background: var(--accent-bg); border: 1px solid #b9d6ee; }
+
+  figure {
+    margin: 20px 0;
+    text-align: center;
+  }
+  figure img {
+    max-width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+  }
+  figcaption {
+    margin-top: 10px;
+    font-size: 0.8438rem;
+    color: var(--text-muted);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0;
+    font-size: 0.9375rem;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 10px 14px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: var(--bg-alt); font-weight: 600; }
+
+  details {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px 18px;
+    background: var(--bg-alt);
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 12px 0;
+  }
+  details[open] summary { border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+  details ul { margin: 12px 0; padding-left: 20px; }
+  details li { margin-bottom: 8px; }
+
+  footer {
+    text-align: center;
+    padding: 32px 24px 64px;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+  footer a { color: var(--accent); }
+
+  a.anchor-back { display: inline-block; margin-top: 4px; font-size: 0.8125rem; color: var(--accent); text-decoration: none; }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14161a;
+      --bg-alt: #1c1f24;
+      --text: #e6e6e6;
+      --text-muted: #9a9fa6;
+      --border: #33383f;
+      --accent: #6cb2f4;
+      --accent-bg: #1a2733;
+      --warn-bg: #2b2413;
+      --warn-border: #7a5c1e;
+      --note-bg: #16222d;
+      --code-bg: #1c1f24;
+      --shadow: 0 1px 2px rgba(0,0,0,.4);
+    }
+    header.hero { background: linear-gradient(135deg, #0d0f12, #1a1d21); }
+  }
+
+  @media (max-width: 640px) {
+    nav.toc ol { columns: 1; }
+    header.hero h1 { font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="icon">❓</div>
+  <h1>Navi FAQ</h1>
+  <p>Plugin WordPress/WooCommerce : questions/réponses sur les articles, pages, produits et catégories de produits — avec regroupement optionnel par thème et schéma SEO <code style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#fff;">FAQPage</code>.</p>
+  <div class="badges">
+    <span class="badge">Version 0.1.0</span>
+    <span class="badge">WordPress 6.0+</span>
+    <span class="badge">PHP 7.4+</span>
+  </div>
+  <a class="repo-link" href="https://github.com/Lucas-tsl/navi-faq">Voir le dépôt sur GitHub →</a>
+</header>
+
+<main>
+
+  <nav class="toc" aria-label="Sommaire">
+    <h2>Sommaire</h2>
+    <ol>
+      <li><a href="#pourquoi">Pourquoi ce plugin</a></li>
+      <li><a href="#stockage">Où c'est stocké</a></li>
+      <li><a href="#produit">Éditer une FAQ — fiche produit</a></li>
+      <li><a href="#categorie">Éditer une FAQ — catégorie</a></li>
+      <li><a href="#duplication">Dupliquer des FAQ</a></li>
+      <li><a href="#import-export">Importer / exporter en JSON</a></li>
+      <li><a href="#front">Ce que voit le visiteur</a></li>
+      <li><a href="#seo">SEO — schéma FAQPage</a></li>
+      <li><a href="#technique">Résumé technique</a></li>
+    </ol>
+  </nav>
+
+  <section id="pourquoi">
+    <h2>Pourquoi ce plugin</h2>
+    <p>Les plugins FAQ existants (ex. FAQ Magic) gèrent les articles, pages et produits, mais pas les <strong>catégories de produits WooCommerce</strong> — aucun moyen natif d'ajouter une FAQ à une page d'archive de catégorie. Navi FAQ comble ce manque, avec une structure de données propre et un regroupement des questions par thème pour les FAQ plus étoffées.</p>
+    <p class="lead">Développé comme plugin compagnon de <a href="https://github.com/Lucas-tsl/navi-wordpress">Saito Navi</a>.</p>
+  </section>
+
+  <section id="stockage">
+    <h2>Où c'est stocké</h2>
+    <p>Chaque FAQ — qu'elle soit sur un article, une page, un produit ou une catégorie — est stockée dans <strong>une seule meta</strong>, <code>_navi_faq_items</code> (post meta ou term meta selon le cas), sous forme de tableau :</p>
+    <pre><code>array(
+    'question' =&gt; 'Livrez-vous à l\'international ?',
+    'answer'   =&gt; '&lt;p&gt;Oui, ...&lt;/p&gt;', // HTML limité (wp_kses_post)
+    'group'    =&gt; 'Commandes &amp; Livraison', // optionnel, '' = pas de thème
+)</code></pre>
+    <p>Une seule source de vérité, un seul format, quel que soit l'endroit où la FAQ est éditée ou affichée.</p>
+    <div class="callout info">
+      <span class="emoji">💡</span>
+      <span>Couverture extensible sans toucher au code : les types de contenu (<code>post</code>, <code>page</code>, <code>product</code>) et les taxonomies (<code>product_cat</code>) sont filtrables via <code>navi_faq_post_types</code> et <code>navi_faq_taxonomies</code>.</span>
+    </div>
+  </section>
+
+  <section id="produit">
+    <h2>Éditer une FAQ — fiche produit</h2>
+    <p>Sur une fiche produit, la FAQ vit dans un panneau autonome <strong>« Navi »</strong> (metabox WordPress classique, <code>add_meta_box()</code>), sous l'éditeur de description. Chaque question est une ligne repliable : titre + thème au clic, question et réponse (éditeur visuel TinyMCE) une fois dépliée.</p>
+    <figure>
+      <img src="assets/screenshots/01-produit-panneau-navi.png" alt="Panneau Navi sur une fiche produit — une question dépliée avec son éditeur, les suivantes repliées" loading="lazy">
+      <figcaption>Panneau Navi sur une fiche produit — une question dépliée, les suivantes repliées</figcaption>
+    </figure>
+    <p>Cliquer sur l'en-tête d'une question la déplie et affiche ses champs : thème optionnel, question (« telle qu'un client pourrait la poser »), réponse en HTML limité.</p>
+    <figure>
+      <img src="assets/screenshots/03-produit-ligne-ouverte-editeur.png" alt="Une ligne dépliée avec son éditeur TinyMCE, en contexte dans l'écran complet" loading="lazy">
+      <figcaption>Une ligne dépliée avec son éditeur, en contexte dans l'écran complet</figcaption>
+    </figure>
+  </section>
+
+  <section id="categorie">
+    <h2>Éditer une FAQ — catégorie de produit</h2>
+    <p>Un écran d'édition de terme (catégorie) n'a pas de <code>add_meta_box()</code> — WordPress y injecte des champs différemment (<code>{taxonomy}_edit_form_fields</code>). Navi FAQ y reproduit quand même l'habillage visuel d'un postbox (bordure, bandeau de titre « Navi ») pour que les deux écrans donnent la même impression de « boîte », même si le mécanisme WordPress sous-jacent diffère.</p>
+    <figure>
+      <img src="assets/screenshots/07-categorie-boite-navi.png" alt="Boîte FAQ sur l'écran d'édition d'une catégorie de produit" loading="lazy">
+      <figcaption>Boîte FAQ sur l'écran d'édition d'une catégorie de produit</figcaption>
+    </figure>
+    <p>C'est <strong>exactement le même composant d'édition</strong> (JS, rendu des lignes, éditeur, dupliquer, import/export) que sur la fiche produit — seul l'habillage autour change pour s'adapter à l'écran WordPress.</p>
+    <figure>
+      <img src="assets/screenshots/08-categorie-page-complete.png" alt="Bas de l'écran catégorie : liste de destinations pour dupliquer, incluant les produits" loading="lazy">
+      <figcaption>Bas de l'écran catégorie : liste de destinations pour dupliquer, incluant les produits</figcaption>
+    </figure>
+  </section>
+
+  <section id="duplication">
+    <h2>Dupliquer des FAQ vers d'autres fiches</h2>
+    <p>Sous la liste des questions, un bloc <strong>« Dupliquer ces FAQ vers... »</strong> permet de copier le jeu de questions actuellement affiché (y compris non enregistré) vers une ou plusieurs autres fiches — articles, pages, produits ou catégories.</p>
+    <figure>
+      <img src="assets/screenshots/04-produit-duplication.png" alt="Bloc de duplication : recherche de destination + liste à cocher" loading="lazy">
+      <figcaption>Bloc de duplication : recherche de destination + liste à cocher</figcaption>
+    </figure>
+    <p>Le champ <strong>« Rechercher une destination »</strong> filtre la liste en direct pendant la frappe (ici, taper « acc » ne garde que « My account » et « Category: Accessoires ») :</p>
+    <figure>
+      <img src="assets/screenshots/05-produit-duplication-filtre.png" alt="Filtre de recherche appliqué sur la liste des destinations" loading="lazy">
+      <figcaption>Filtre de recherche appliqué sur la liste des destinations</figcaption>
+    </figure>
+    <div class="callout warn">
+      <span class="emoji">⚠️</span>
+      <span>La duplication <strong>remplace</strong> les FAQ existantes des destinations cochées par celles actuellement enregistrées sur la fiche source. Le plugin le rappelle explicitement dans l'interface : penser à sauvegarder ses modifications avant de dupliquer.</span>
+    </div>
+    <p class="lead">Côté technique : un clic sur « Dupliquer vers la sélection » déclenche une requête AJAX (<code>wp_ajax_navi_faq_duplicate</code>) protégée par un nonce dédié (<code>navi_faq_duplicate</code>), sans rechargement de page.</p>
+  </section>
+
+  <section id="import-export">
+    <h2>Importer / exporter en JSON</h2>
+    <p>Chaque écran d'édition inclut aussi un mini import/export pour sauvegarder ou réutiliser un jeu de questions en dehors de WordPress :</p>
+    <figure>
+      <img src="assets/screenshots/06-produit-import-export.png" alt="Bloc Importer / Exporter (JSON)" loading="lazy">
+      <figcaption>Bloc Importer / Exporter (JSON)</figcaption>
+    </figure>
+    <ul>
+      <li><strong>Exporter en JSON</strong> récupère les questions telles qu'affichées à l'écran, y compris les modifications non encore enregistrées.</li>
+      <li><strong>Importer</strong> remplace la totalité des questions du formulaire par le contenu d'un fichier <code>.json</code> (même format que l'export), choisi via le sélecteur de fichier ou collé directement dans la zone de texte.</li>
+    </ul>
+    <p class="lead">Pratique pour dupliquer une trame de FAQ entre deux installations WordPress, ou garder une sauvegarde hors base de données.</p>
+  </section>
+
+  <section id="front">
+    <h2>Ce que voit le visiteur</h2>
+
+    <h3>Accordéon simple</h3>
+    <p>Sans thème renseigné sur les questions, la FAQ s'affiche en accordéon simple (<code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code> natifs) :</p>
+    <figure>
+      <img src="assets/screenshots/10-front-produit-faq-ouverte.png" alt="FAQ produit en front — un item ouvert, style accordéon" loading="lazy">
+      <figcaption>FAQ produit en front — un item ouvert, style accordéon</figcaption>
+    </figure>
+
+    <h3>Sur une page de catégorie</h3>
+    <p>Les catégories de produits n'ont pas de zone de contenu où poser un shortcode à la main — Navi FAQ y affiche donc la FAQ <strong>automatiquement</strong>, en haut de la page d'archive :</p>
+    <figure>
+      <img src="assets/screenshots/11-front-categorie-faq.png" alt="FAQ affichée automatiquement en haut d'une page de catégorie" loading="lazy">
+      <figcaption>FAQ affichée automatiquement en haut d'une page de catégorie</figcaption>
+    </figure>
+
+    <h3>Regroupement par thème (onglets)</h3>
+    <p>Donner le <strong>même thème</strong> à plusieurs questions les regroupe automatiquement sous un même onglet en front. Une seule catégorie de thème (ou aucune) : accordéon simple, pas d'onglets inutiles pour rien. Navigation clavier flèches gauche/droite/Home/End entre onglets (pattern <a href="https://www.w3.org/WAI/ARIA/apg/patterns/tabs/">ARIA Tabs</a>).</p>
+
+    <h3>Shortcodes</h3>
+    <table>
+      <thead>
+        <tr><th>Shortcode</th><th>Effet</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>[navi_faq]</code></td><td>FAQ du contexte courant : article/page/produit affiché, ou page d'archive d'une taxonomie couverte</td></tr>
+        <tr><td><code>[navi_faq_all]</code></td><td>Toutes les FAQ du site, groupées par titre — pour une page « Questions fréquentes » centralisée</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="seo">
+    <h2>SEO — schéma FAQPage (JSON-LD)</h2>
+    <p>Le plugin génère côté serveur un schéma <a href="https://schema.org/FAQPage"><code>FAQPage</code></a> en JSON-LD, <strong>uniquement là où le contenu est réellement visible</strong> (recommandation Google) :</p>
+    <ul>
+      <li>toujours sur une page de catégorie couverte (puisque la FAQ y est affichée automatiquement) ;</li>
+      <li>seulement si le shortcode <code>[navi_faq]</code> est effectivement posé dans le contenu, sur un article/une page/un produit.</li>
+    </ul>
+    <p class="lead">Pas de schéma « fantôme » pointant vers du contenu qui n'existe pas réellement sur la page.</p>
+  </section>
+
+  <section id="technique">
+    <h2>Résumé technique</h2>
+    <details>
+      <summary>Architecture, hooks, fichiers</summary>
+      <ul>
+        <li><strong>Donnée</strong> : une seule meta <code>_navi_faq_items</code> (post meta ou term meta), tableau <code>question</code> / <code>answer</code> (HTML limité, <code>wp_kses_post</code>) / <code>group</code>.</li>
+        <li><strong>Admin fiche produit</strong> : <code>includes/navi-panel.php</code> — metabox autonome <code>navi_panel_box</code> (<code>add_meta_box()</code>), avec un système d'onglets internes (<code>navi_product_panel_tabs</code>) activé seulement si 2 fonctionnalités Navi ou plus sont enregistrées.</li>
+        <li><strong>Admin catégorie</strong> : <code>includes/admin.php</code>, fonction <code>navi_faq_render_term_field()</code>, accrochée sur <code>{taxonomy}_edit_form_fields</code> — pas de <code>add_meta_box()</code> possible sur un écran de terme, d'où le <code>.navi-panel-box</code> qui reproduit l'habillage visuel à la main.</li>
+        <li><strong>Duplication</strong> : AJAX <code>wp_ajax_navi_faq_duplicate</code>, nonce <code>navi_faq_duplicate</code>, remplace les FAQ des destinations cochées.</li>
+        <li><strong>Front</strong> : <code>includes/frontend.php</code> — shortcodes <code>navi_faq</code> et <code>navi_faq_all</code>, accordéon <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code>, onglets ARIA si plusieurs thèmes, schéma <code>FAQPage</code> JSON-LD injecté conditionnellement.</li>
+        <li><strong>Couverture</strong> filtrable sans toucher au code : <code>navi_faq_post_types</code> (défaut <code>post</code>, <code>page</code>, <code>product</code>) et <code>navi_faq_taxonomies</code> (défaut <code>product_cat</code>).</li>
+      </ul>
+    </details>
+    <div class="callout note" style="margin-top:20px;">
+      <span class="emoji">🧪</span>
+      <span>Version <strong>0.1.0</strong> — base fonctionnelle testée en environnement de développement local (captures ci-dessus prises sur cette instance). Pas encore soumis à WordPress.org.</span>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Navi FAQ — <a href="https://github.com/Lucas-tsl/navi-faq">github.com/Lucas-tsl/navi-faq</a></p>
+</footer>
+
+</body>
+</html>

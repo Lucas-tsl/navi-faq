@@ -6,6 +6,8 @@ regroupement optionnel des questions par thème (affichage en onglets).
 
 Développé comme plugin compagnon de [Saito Navi](https://github.com/Lucas-tsl/navi-wordpress).
 
+📖 **[Documentation complète (captures d'écran + explications)](https://lucas-tsl.github.io/navi-faq/)**
+
 ## Pourquoi ce plugin
 
 Les plugins FAQ existants (ex. FAQ Magic) gèrent les articles, pages et
