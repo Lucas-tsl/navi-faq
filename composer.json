@@ -1,5 +1,5 @@
 {
-    "name": "lucas-tsl/navi-faq",
+    "name": "lucas-tsl/saito-faq",
     "description": "FAQ (questions/réponses) sur les articles, pages, produits et catégories de produits WooCommerce, avec schéma FAQPage (JSON-LD) et regroupement par thème.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",

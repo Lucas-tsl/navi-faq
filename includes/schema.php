@@ -5,19 +5,19 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Schéma FAQPage (JSON-LD) — recommandation Google : le schéma ne doit
  * correspondre qu'à un contenu réellement visible sur la page. Sur une page
  * d'archive de catégorie couverte, l'affichage est automatique (voir
- * navi_faq_render_on_term_archive(), frontend.php) donc le schéma l'est
+ * saito_faq_render_on_term_archive(), frontend.php) donc le schéma l'est
  * aussi. Sur un article/une page/un produit, l'affichage dépend du
- * shortcode [navi_faq] posé à la main dans le contenu : le schéma ne sort
+ * shortcode [saito_faq] posé à la main dans le contenu : le schéma ne sort
  * donc que si ce shortcode y est réellement présent.
  */
-add_action( 'wp_head', 'navi_faq_output_schema' );
-function navi_faq_output_schema() {
-    if ( is_tax( navi_faq_taxonomies() ) ) {
-        $items = navi_faq_get_current_context_items();
+add_action( 'wp_head', 'saito_faq_output_schema' );
+function saito_faq_output_schema() {
+    if ( is_tax( saito_faq_taxonomies() ) ) {
+        $items = saito_faq_get_current_context_items();
     } elseif ( is_singular( navi_faq_post_types() ) ) {
         global $post;
-        $items = ( $post && has_shortcode( $post->post_content, 'navi_faq' ) )
-            ? navi_faq_get_current_context_items()
+        $items = ( $post && has_shortcode( $post->post_content, 'saito_faq' ) )
+            ? saito_faq_get_current_context_items()
             : array();
     } else {
         $items = array();

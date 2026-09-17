@@ -11,16 +11,16 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  *
  * Registre ouvert via le filtre 'navi_product_panel_tabs' : n'importe quel
  * plugin peut y ajouter un onglet (voir navi_panel_get_tabs()) sans créer
- * de dépendance au chargement — si navi-faq est absent, ce filtre n'existe
+ * de dépendance au chargement — si saito-faq est absent, ce filtre n'existe
  * simplement pas et l'appel n'a aucun effet pour l'appelant.
  */
 
-add_action( 'add_meta_boxes', 'navi_panel_register_meta_box' );
-function navi_panel_register_meta_box() {
+add_action( 'add_meta_boxes', 'saito_panel_register_meta_box' );
+function saito_panel_register_meta_box() {
     if ( ! in_array( 'product', navi_faq_post_types(), true ) ) {
         return;
     }
-    add_meta_box( 'navi_panel_box', __( 'Navi', 'navi-faq' ), 'navi_panel_render', 'product', 'normal', 'default' );
+    add_meta_box( 'navi_panel_box', __( 'Navi', 'saito-faq' ), 'navi_panel_render', 'product', 'normal', 'default' );
 }
 
 /**
@@ -33,18 +33,18 @@ function navi_panel_get_tabs() {
     return is_array( $tabs ) ? $tabs : array();
 }
 
-add_filter( 'navi_product_panel_tabs', 'navi_faq_register_panel_tab' );
-function navi_faq_register_panel_tab( $tabs ) {
+add_filter( 'navi_product_panel_tabs', 'saito_faq_register_panel_tab' );
+function saito_faq_register_panel_tab( $tabs ) {
     $tabs['faq'] = array(
-        'label'    => __( 'FAQ', 'navi-faq' ),
-        'callback' => 'navi_faq_render_panel_tab',
+        'label'    => __( 'FAQ', 'saito-faq' ),
+        'callback' => 'saito_faq_render_panel_tab',
     );
     return $tabs;
 }
 
-function navi_faq_render_panel_tab( $post ) {
-    wp_nonce_field( 'navi_faq_save_' . $post->ID, 'navi_faq_nonce' );
-    navi_faq_render_editor_ui( navi_faq_get_for_post( $post->ID ), 'navi_faq_post', 'post', $post->ID );
+function saito_faq_render_panel_tab( $post ) {
+    wp_nonce_field( 'saito_faq_save_' . $post->ID, 'saito_faq_nonce' );
+    saito_faq_render_editor_ui( saito_faq_get_for_post( $post->ID ), 'saito_faq_post', 'post', $post->ID );
 }
 
 /**
@@ -52,7 +52,7 @@ function navi_faq_render_panel_tab( $post ) {
  * fonctionnalité Navi active) : son contenu s'affiche directement, sans le
  * "meuble" d'onglets — même logique que le front, qui n'affiche des
  * onglets que si 2 thèmes ou plus sont réellement utilisés (voir
- * navi_faq_render_items_html(), frontend.php).
+ * saito_faq_render_items_html(), frontend.php).
  */
 function navi_panel_render( $post ) {
     $tabs = navi_panel_get_tabs();
@@ -66,13 +66,13 @@ function navi_panel_render( $post ) {
         return;
     }
     ?>
-    <div class="navi-panel-tabs">
-        <div class="navi-panel-tabs-nav" role="tablist" aria-label="<?php esc_attr_e( 'Fonctionnalités Navi', 'navi-faq' ); ?>">
+    <div class="saito-panel-tabs">
+        <div class="saito-panel-tabs-nav" role="tablist" aria-label="<?php esc_attr_e( 'Fonctionnalités Navi', 'saito-faq' ); ?>">
             <?php
             $first = true;
             foreach ( $tabs as $id => $tab ) :
                 ?>
-                <button type="button" class="navi-panel-tab-btn<?php echo $first ? ' active' : ''; ?>" role="tab" aria-selected="<?php echo $first ? 'true' : 'false'; ?>" aria-controls="navi-panel-tab-<?php echo esc_attr( $id ); ?>" id="navi-panel-tabbtn-<?php echo esc_attr( $id ); ?>">
+                <button type="button" class="saito-panel-tab-btn<?php echo $first ? ' active' : ''; ?>" role="tab" aria-selected="<?php echo $first ? 'true' : 'false'; ?>" aria-controls="saito-panel-tab-<?php echo esc_attr( $id ); ?>" id="saito-panel-tabbtn-<?php echo esc_attr( $id ); ?>">
                     <?php echo esc_html( $tab['label'] ); ?>
                 </button>
                 <?php
@@ -80,12 +80,12 @@ function navi_panel_render( $post ) {
             endforeach;
             ?>
         </div>
-        <div class="navi-panel-tabs-panels">
+        <div class="saito-panel-tabs-panels">
             <?php
             $first = true;
             foreach ( $tabs as $id => $tab ) :
                 ?>
-                <div class="navi-panel-tab-panel<?php echo $first ? ' active' : ''; ?>" id="navi-panel-tab-<?php echo esc_attr( $id ); ?>" role="tabpanel" aria-labelledby="navi-panel-tabbtn-<?php echo esc_attr( $id ); ?>" <?php echo $first ? '' : 'hidden'; ?>>
+                <div class="saito-panel-tab-panel<?php echo $first ? ' active' : ''; ?>" id="saito-panel-tab-<?php echo esc_attr( $id ); ?>" role="tabpanel" aria-labelledby="saito-panel-tabbtn-<?php echo esc_attr( $id ); ?>" <?php echo $first ? '' : 'hidden'; ?>>
                     <?php call_user_func( $tab['callback'], $post ); ?>
                 </div>
                 <?php

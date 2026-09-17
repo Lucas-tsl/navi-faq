@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name="NaviFAQ">
-    <description>Règles de code pour le plugin Navi FAQ</description>
+<ruleset name="SaitoFAQ">
+    <description>Règles de code pour le plugin Saito FAQ</description>
 
     <file>.</file>
     <exclude-pattern>/vendor/*</exclude-pattern>
@@ -20,7 +20,7 @@
     <rule ref="WordPress.WP.I18n">
         <properties>
             <property name="text_domain" type="array">
-                <element value="navi-faq"/>
+                <element value="saito-faq"/>
             </property>
         </properties>
     </rule>
@@ -32,19 +32,22 @@
     <rule ref="WordPress.PHP.DevelopmentFunctions"/>
 
     <!-- Préfixe obligatoire pour toutes les fonctions/constantes/options globales.
-         "navi" (sans "_faq") en plus de "navi_faq" : le panneau produit
-         "Navi" (includes/navi-panel.php) et son filtre
-         navi_product_panel_tabs sont une API volontairement partagée,
-         pensée pour que d'autres plugins de la famille Navi (ex. Stories,
-         plugin compagnon Saito Navi) puissent s'y greffer — un préfixe
-         navi_faq_ y serait trompeur. -->
+         "navi_panel"/"navi_product_panel" (includes/saito-panel.php) : API
+         volontairement partagée avec le plugin compagnon Saito Navi (son
+         module Stories s'y accroche via navi_panel_get_tabs() et le filtre
+         navi_product_panel_tabs) — gardée sous son nom d'origine "navi" pour
+         ne pas casser cette intégration déjà publiée. Même chose pour
+         navi_faq_post_types(), lue directement par Saito Navi. Tout le reste
+         du plugin est sous le préfixe saito_faq_/SAITO_FAQ_. -->
     <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
         <properties>
             <property name="prefixes" type="array">
-                <element value="navi_faq"/>
-                <element value="NAVI_FAQ"/>
+                <element value="saito_faq"/>
+                <element value="SAITO_FAQ"/>
+                <element value="saito_panel"/>
                 <element value="navi_panel"/>
                 <element value="navi_product_panel"/>
+                <element value="navi_faq_post_types"/>
             </property>
         </properties>
     </rule>

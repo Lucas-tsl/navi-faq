@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Déploie Navi FAQ vers une instance WordPress/WooCommerce de dev locale
+# Déploie Saito FAQ vers une instance WordPress/WooCommerce de dev locale
 # existante — ce dépôt n'a pas son propre docker-compose.yml : il partage
 # la stack du plugin compagnon Saito Navi (navi-wordpress/docker-compose.yml,
 # conteneurs navi_wp_web/navi_wp_cli), pour tester les deux plugins sur le
@@ -9,8 +9,8 @@
 # que ce qui serait réellement distribué), puis le copie dans le conteneur.
 #
 # Usage : ./scripts/deploy-local.sh [--no-verify]
-#   NAVI_FAQ_DEPLOY_CONTAINER : nom du conteneur web (défaut navi_wp_web)
-#   NAVI_FAQ_DEPLOY_BASE_URL  : URL utilisée pour la vérification finale
+#   SAITO_FAQ_DEPLOY_CONTAINER : nom du conteneur web (défaut navi_wp_web)
+#   SAITO_FAQ_DEPLOY_BASE_URL  : URL utilisée pour la vérification finale
 #                                (défaut http://localhost:8082)
 
 set -euo pipefail
@@ -18,9 +18,9 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 
-CONTAINER="${NAVI_FAQ_DEPLOY_CONTAINER:-navi_wp_web}"
-BASE_URL="${NAVI_FAQ_DEPLOY_BASE_URL:-http://localhost:8082}"
-PLUGIN_DEST="/var/www/html/wp-content/plugins/navi-faq"
+CONTAINER="${SAITO_FAQ_DEPLOY_CONTAINER:-navi_wp_web}"
+BASE_URL="${SAITO_FAQ_DEPLOY_BASE_URL:-http://localhost:8082}"
+PLUGIN_DEST="/var/www/html/wp-content/plugins/saito-faq"
 
 VERIFY=1
 for arg in "$@"; do
@@ -42,12 +42,12 @@ BUILD_DIR="$(mktemp -d)"
 trap 'rm -rf "$BUILD_DIR"' EXIT
 
 echo "==> Assemblage du plugin (rsync + .distignore) dans $BUILD_DIR"
-rsync -a --exclude-from="$REPO_ROOT/.distignore" "$REPO_ROOT/" "$BUILD_DIR/navi-faq/"
+rsync -a --exclude-from="$REPO_ROOT/.distignore" "$REPO_ROOT/" "$BUILD_DIR/saito-faq/"
 
 echo "==> Copie vers $CONTAINER:$PLUGIN_DEST"
 docker exec "$CONTAINER" mkdir -p "$PLUGIN_DEST"
 docker exec "$CONTAINER" sh -c "rm -rf $PLUGIN_DEST/*"
-docker cp "$BUILD_DIR/navi-faq/." "$CONTAINER:$PLUGIN_DEST"
+docker cp "$BUILD_DIR/saito-faq/." "$CONTAINER:$PLUGIN_DEST"
 
 echo "==> chown www-data:www-data sur $PLUGIN_DEST"
 docker exec "$CONTAINER" chown -R www-data:www-data "$PLUGIN_DEST"
