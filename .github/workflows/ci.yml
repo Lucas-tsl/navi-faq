@@ -70,20 +70,20 @@ jobs:
 
       - name: Assembler le dossier du plugin (fichiers de dev exclus via .distignore)
         run: |
-          mkdir -p build/navi-faq
-          rsync -a --exclude-from='.distignore' ./ build/navi-faq/
-          cd build && zip -r navi-faq.zip navi-faq
+          mkdir -p build/saito-faq
+          rsync -a --exclude-from='.distignore' ./ build/saito-faq/
+          cd build && zip -r saito-faq.zip saito-faq
 
       - name: Uploader l'artefact de build
         uses: actions/upload-artifact@v4
         with:
-          name: navi-faq
-          path: build/navi-faq.zip
+          name: saito-faq
+          path: build/saito-faq.zip
 
       - name: Attacher le zip à la Release GitHub
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: build/navi-faq.zip
+          files: build/saito-faq.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

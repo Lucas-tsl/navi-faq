@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Navi FAQ — Documentation</title>
-<meta name="description" content="Documentation complète du plugin WordPress/WooCommerce Navi FAQ : édition, duplication, import/export, affichage front, SEO.">
+<title>Saito FAQ — Documentation</title>
+<meta name="description" content="Documentation complète du plugin WordPress/WooCommerce Saito FAQ : édition, duplication, import/export, affichage front, SEO.">
 <style>
   :root {
     --bg: #ffffff;
@@ -204,7 +204,7 @@
 
 <header class="hero">
   <div class="icon">❓</div>
-  <h1>Navi FAQ</h1>
+  <h1>Saito FAQ</h1>
   <p>Plugin WordPress/WooCommerce : questions/réponses sur les articles, pages, produits et catégories de produits — avec regroupement optionnel par thème et schéma SEO <code style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#fff;">FAQPage</code>.</p>
   <div class="badges">
     <span class="badge">Version 0.1.0</span>
@@ -233,13 +233,13 @@
 
   <section id="pourquoi">
     <h2>Pourquoi ce plugin</h2>
-    <p>Les plugins FAQ existants (ex. FAQ Magic) gèrent les articles, pages et produits, mais pas les <strong>catégories de produits WooCommerce</strong> — aucun moyen natif d'ajouter une FAQ à une page d'archive de catégorie. Navi FAQ comble ce manque, avec une structure de données propre et un regroupement des questions par thème pour les FAQ plus étoffées.</p>
+    <p>Les plugins FAQ existants (ex. FAQ Magic) gèrent les articles, pages et produits, mais pas les <strong>catégories de produits WooCommerce</strong> — aucun moyen natif d'ajouter une FAQ à une page d'archive de catégorie. Saito FAQ comble ce manque, avec une structure de données propre et un regroupement des questions par thème pour les FAQ plus étoffées.</p>
     <p class="lead">Développé comme plugin compagnon de <a href="https://github.com/Lucas-tsl/navi-wordpress">Saito Navi</a>.</p>
   </section>
 
   <section id="stockage">
     <h2>Où c'est stocké</h2>
-    <p>Chaque FAQ — qu'elle soit sur un article, une page, un produit ou une catégorie — est stockée dans <strong>une seule meta</strong>, <code>_navi_faq_items</code> (post meta ou term meta selon le cas), sous forme de tableau :</p>
+    <p>Chaque FAQ — qu'elle soit sur un article, une page, un produit ou une catégorie — est stockée dans <strong>une seule meta</strong>, <code>_saito_faq_items</code> (post meta ou term meta selon le cas), sous forme de tableau :</p>
     <pre><code>array(
     'question' =&gt; 'Livrez-vous à l\'international ?',
     'answer'   =&gt; '&lt;p&gt;Oui, ...&lt;/p&gt;', // HTML limité (wp_kses_post)
@@ -248,7 +248,7 @@
     <p>Une seule source de vérité, un seul format, quel que soit l'endroit où la FAQ est éditée ou affichée.</p>
     <div class="callout info">
       <span class="emoji">💡</span>
-      <span>Couverture extensible sans toucher au code : les types de contenu (<code>post</code>, <code>page</code>, <code>product</code>) et les taxonomies (<code>product_cat</code>) sont filtrables via <code>navi_faq_post_types</code> et <code>navi_faq_taxonomies</code>.</span>
+      <span>Couverture extensible sans toucher au code : les types de contenu (<code>post</code>, <code>page</code>, <code>product</code>) et les taxonomies (<code>product_cat</code>) sont filtrables via <code>navi_faq_post_types</code> et <code>saito_faq_taxonomies</code>.</span>
     </div>
   </section>
 
@@ -272,7 +272,7 @@
 
   <section id="categorie">
     <h2>Éditer une FAQ — catégorie de produit</h2>
-    <p>Un écran d'édition de terme (catégorie) n'a pas de <code>add_meta_box()</code> — WordPress y injecte des champs différemment (<code>{taxonomy}_edit_form_fields</code>). Navi FAQ y reproduit quand même l'habillage visuel d'un postbox (bordure, bandeau de titre « Navi ») pour que les deux écrans donnent la même impression de « boîte », même si le mécanisme WordPress sous-jacent diffère.</p>
+    <p>Un écran d'édition de terme (catégorie) n'a pas de <code>add_meta_box()</code> — WordPress y injecte des champs différemment (<code>{taxonomy}_edit_form_fields</code>). Saito FAQ y reproduit quand même l'habillage visuel d'un postbox (bordure, bandeau de titre « Navi ») pour que les deux écrans donnent la même impression de « boîte », même si le mécanisme WordPress sous-jacent diffère.</p>
     <figure>
       <img src="assets/screenshots/07-categorie-boite-navi.png" alt="Boîte FAQ sur l'écran d'édition d'une catégorie de produit" loading="lazy">
       <figcaption>Boîte FAQ sur l'écran d'édition d'une catégorie de produit</figcaption>
@@ -300,7 +300,7 @@
       <span class="emoji">⚠️</span>
       <span>La duplication <strong>remplace</strong> les FAQ existantes des destinations cochées par celles actuellement enregistrées sur la fiche source. Le plugin le rappelle explicitement dans l'interface : penser à sauvegarder ses modifications avant de dupliquer.</span>
     </div>
-    <p class="lead">Côté technique : un clic sur « Dupliquer vers la sélection » déclenche une requête AJAX (<code>wp_ajax_navi_faq_duplicate</code>) protégée par un nonce dédié (<code>navi_faq_duplicate</code>), sans rechargement de page.</p>
+    <p class="lead">Côté technique : un clic sur « Dupliquer vers la sélection » déclenche une requête AJAX (<code>wp_ajax_saito_faq_duplicate</code>) protégée par un nonce dédié (<code>saito_faq_duplicate</code>), sans rechargement de page.</p>
   </section>
 
   <section id="import-export">
@@ -328,7 +328,7 @@
     </figure>
 
     <h3>Sur une page de catégorie</h3>
-    <p>Les catégories de produits n'ont pas de zone de contenu où poser un shortcode à la main — Navi FAQ y affiche donc la FAQ <strong>automatiquement</strong>, en haut de la page d'archive :</p>
+    <p>Les catégories de produits n'ont pas de zone de contenu où poser un shortcode à la main — Saito FAQ y affiche donc la FAQ <strong>automatiquement</strong>, en haut de la page d'archive :</p>
     <figure>
       <img src="assets/screenshots/11-front-categorie-faq.png" alt="FAQ affichée automatiquement en haut d'une page de catégorie" loading="lazy">
       <figcaption>FAQ affichée automatiquement en haut d'une page de catégorie</figcaption>
@@ -343,8 +343,8 @@
         <tr><th>Shortcode</th><th>Effet</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>[navi_faq]</code></td><td>FAQ du contexte courant : article/page/produit affiché, ou page d'archive d'une taxonomie couverte</td></tr>
-        <tr><td><code>[navi_faq_all]</code></td><td>Toutes les FAQ du site, groupées par titre — pour une page « Questions fréquentes » centralisée</td></tr>
+        <tr><td><code>[saito_faq]</code></td><td>FAQ du contexte courant : article/page/produit affiché, ou page d'archive d'une taxonomie couverte</td></tr>
+        <tr><td><code>[saito_faq_all]</code></td><td>Toutes les FAQ du site, groupées par titre — pour une page « Questions fréquentes » centralisée</td></tr>
       </tbody>
     </table>
   </section>
@@ -354,7 +354,7 @@
     <p>Le plugin génère côté serveur un schéma <a href="https://schema.org/FAQPage"><code>FAQPage</code></a> en JSON-LD, <strong>uniquement là où le contenu est réellement visible</strong> (recommandation Google) :</p>
     <ul>
       <li>toujours sur une page de catégorie couverte (puisque la FAQ y est affichée automatiquement) ;</li>
-      <li>seulement si le shortcode <code>[navi_faq]</code> est effectivement posé dans le contenu, sur un article/une page/un produit.</li>
+      <li>seulement si le shortcode <code>[saito_faq]</code> est effectivement posé dans le contenu, sur un article/une page/un produit.</li>
     </ul>
     <p class="lead">Pas de schéma « fantôme » pointant vers du contenu qui n'existe pas réellement sur la page.</p>
   </section>
@@ -364,12 +364,12 @@
     <details>
       <summary>Architecture, hooks, fichiers</summary>
       <ul>
-        <li><strong>Donnée</strong> : une seule meta <code>_navi_faq_items</code> (post meta ou term meta), tableau <code>question</code> / <code>answer</code> (HTML limité, <code>wp_kses_post</code>) / <code>group</code>.</li>
-        <li><strong>Admin fiche produit</strong> : <code>includes/navi-panel.php</code> — metabox autonome <code>navi_panel_box</code> (<code>add_meta_box()</code>), avec un système d'onglets internes (<code>navi_product_panel_tabs</code>) activé seulement si 2 fonctionnalités Navi ou plus sont enregistrées.</li>
-        <li><strong>Admin catégorie</strong> : <code>includes/admin.php</code>, fonction <code>navi_faq_render_term_field()</code>, accrochée sur <code>{taxonomy}_edit_form_fields</code> — pas de <code>add_meta_box()</code> possible sur un écran de terme, d'où le <code>.navi-panel-box</code> qui reproduit l'habillage visuel à la main.</li>
-        <li><strong>Duplication</strong> : AJAX <code>wp_ajax_navi_faq_duplicate</code>, nonce <code>navi_faq_duplicate</code>, remplace les FAQ des destinations cochées.</li>
-        <li><strong>Front</strong> : <code>includes/frontend.php</code> — shortcodes <code>navi_faq</code> et <code>navi_faq_all</code>, accordéon <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code>, onglets ARIA si plusieurs thèmes, schéma <code>FAQPage</code> JSON-LD injecté conditionnellement.</li>
-        <li><strong>Couverture</strong> filtrable sans toucher au code : <code>navi_faq_post_types</code> (défaut <code>post</code>, <code>page</code>, <code>product</code>) et <code>navi_faq_taxonomies</code> (défaut <code>product_cat</code>).</li>
+        <li><strong>Donnée</strong> : une seule meta <code>_saito_faq_items</code> (post meta ou term meta), tableau <code>question</code> / <code>answer</code> (HTML limité, <code>wp_kses_post</code>) / <code>group</code>.</li>
+        <li><strong>Admin fiche produit</strong> : <code>includes/saito-panel.php</code> — metabox autonome <code>navi_panel_box</code> (<code>add_meta_box()</code>), avec un système d'onglets internes (<code>navi_product_panel_tabs</code>) activé seulement si 2 fonctionnalités Navi ou plus sont enregistrées.</li>
+        <li><strong>Admin catégorie</strong> : <code>includes/admin.php</code>, fonction <code>saito_faq_render_term_field()</code>, accrochée sur <code>{taxonomy}_edit_form_fields</code> — pas de <code>add_meta_box()</code> possible sur un écran de terme, d'où le <code>.saito-panel-box</code> qui reproduit l'habillage visuel à la main.</li>
+        <li><strong>Duplication</strong> : AJAX <code>wp_ajax_saito_faq_duplicate</code>, nonce <code>saito_faq_duplicate</code>, remplace les FAQ des destinations cochées.</li>
+        <li><strong>Front</strong> : <code>includes/frontend.php</code> — shortcodes <code>saito_faq</code> et <code>saito_faq_all</code>, accordéon <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code>, onglets ARIA si plusieurs thèmes, schéma <code>FAQPage</code> JSON-LD injecté conditionnellement.</li>
+        <li><strong>Couverture</strong> filtrable sans toucher au code : <code>navi_faq_post_types</code> (défaut <code>post</code>, <code>page</code>, <code>product</code>) et <code>saito_faq_taxonomies</code> (défaut <code>product_cat</code>).</li>
       </ul>
     </details>
     <div class="callout note" style="margin-top:20px;">
@@ -381,7 +381,7 @@
 </main>
 
 <footer>
-  <p>Navi FAQ — <a href="https://github.com/Lucas-tsl/navi-faq">github.com/Lucas-tsl/navi-faq</a></p>
+  <p>Saito FAQ — <a href="https://github.com/Lucas-tsl/navi-faq">github.com/Lucas-tsl/navi-faq</a></p>
 </footer>
 
 </body>

@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 final class DataTest extends TestCase {
 
     public function test_sanitize_items_keeps_complete_rows() {
-        $items = navi_faq_sanitize_items(
+        $items = saito_faq_sanitize_items(
             array( 'Livrez-vous à l\'international ?' ),
             array( 'Oui, dans toute l\'UE.' ),
             array( 'Commandes & Livraison' )
@@ -18,7 +18,7 @@ final class DataTest extends TestCase {
     }
 
     public function test_sanitize_items_discards_rows_missing_question_or_answer() {
-        $items = navi_faq_sanitize_items(
+        $items = saito_faq_sanitize_items(
             array( '', 'Question sans réponse', 'Question complète' ),
             array( 'Réponse orpheline', '', 'Réponse complète' )
         );
@@ -28,7 +28,7 @@ final class DataTest extends TestCase {
     }
 
     public function test_sanitize_items_defaults_group_to_empty_string() {
-        $items = navi_faq_sanitize_items(
+        $items = saito_faq_sanitize_items(
             array( 'Question' ),
             array( 'Réponse' )
         );
@@ -37,7 +37,7 @@ final class DataTest extends TestCase {
     }
 
     public function test_sanitize_items_ignores_extra_group_entries_without_matching_question() {
-        $items = navi_faq_sanitize_items(
+        $items = saito_faq_sanitize_items(
             array( 'Question' ),
             array( 'Réponse' ),
             array( 'Thème A', 'Thème orphelin' )

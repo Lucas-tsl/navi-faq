@@ -28,10 +28,10 @@
     if (typeof tinymce !== 'undefined') {
         tinymce.on('AddEditor', function (event) {
             var mceEditor = event.editor;
-            if (!mceEditor.id || 0 !== mceEditor.id.indexOf('navi_faq_answer_')) {
+            if (!mceEditor.id || 0 !== mceEditor.id.indexOf('saito_faq_answer_')) {
                 return;
             }
-            var counter = document.querySelector('.navi-faq-char-count[data-editor="' + mceEditor.id + '"]');
+            var counter = document.querySelector('.saito-faq-char-count[data-editor="' + mceEditor.id + '"]');
             if (!counter) {
                 return;
             }
@@ -47,12 +47,12 @@
         });
     }
 
-    document.querySelectorAll('.navi-faq-editor').forEach(function (editor) {
+    document.querySelectorAll('.saito-faq-editor').forEach(function (editor) {
         var prefix = editor.getAttribute('data-prefix');
         var emptyLabel = editor.getAttribute('data-empty-label') || '';
-        var rows = editor.querySelector('.navi-faq-rows');
-        var addBtn = editor.querySelector('.navi-faq-add-row');
-        var status = editor.querySelector('.navi-faq-status');
+        var rows = editor.querySelector('.saito-faq-rows');
+        var addBtn = editor.querySelector('.saito-faq-add-row');
+        var status = editor.querySelector('.saito-faq-status');
         var nextNumber = parseInt(editor.getAttribute('data-next-number'), 10) || 1;
 
         function announce(message) {
@@ -62,16 +62,16 @@
         }
 
         function renumberTitles() {
-            var titles = rows.querySelectorAll('.navi-faq-row-title');
+            var titles = rows.querySelectorAll('.saito-faq-row-title');
             titles.forEach(function (title, index) {
                 title.textContent = naviFaqAdminI18n.questionNumber.replace('%d', index + 1);
             });
 
-            var empty = rows.querySelector('.navi-faq-empty');
+            var empty = rows.querySelector('.saito-faq-empty');
             if (0 === titles.length) {
                 if (!empty) {
                     empty = document.createElement('p');
-                    empty.className = 'navi-faq-empty';
+                    empty.className = 'saito-faq-empty';
                     empty.textContent = emptyLabel;
                     rows.appendChild(empty);
                 }
@@ -83,7 +83,7 @@
         // wp.editor.initialize()/remove() : instancie/détruit un véritable
         // éditeur TinyMCE sur la ligne, avec les mêmes réglages que
         // wp_editor() côté PHP (voir naviFaqEditorSettings, localisé depuis
-        // navi_faq_editor_tinymce_settings() dans admin.php) — pour que la
+        // saito_faq_editor_tinymce_settings() dans admin.php) — pour que la
         // barre d'outils soit identique, qu'une ligne vienne du serveur ou
         // d'un clic sur "Ajouter une question".
         function initEditor(editorId) {
@@ -104,7 +104,7 @@
         }
 
         // Une ligne repliée par défaut au chargement (toutes sauf la
-        // première, voir navi_faq_render_editor_ui(), admin.php) a son
+        // première, voir saito_faq_render_editor_ui(), admin.php) a son
         // éditeur TinyMCE initialisé pendant que son conteneur est encore
         // caché (hidden) : il se retrouve avec une largeur/hauteur nulle.
         // Détruire puis réinitialiser l'éditeur une fois la ligne visible
@@ -122,7 +122,7 @@
                 return;
             }
             body.setAttribute('data-editor-fixed', 'true');
-            var textarea = body.querySelector('textarea[id^="navi_faq_answer_"]');
+            var textarea = body.querySelector('textarea[id^="saito_faq_answer_"]');
             if (!textarea || typeof tinymce === 'undefined' || !tinymce.get(textarea.id)) {
                 return;
             }
@@ -132,44 +132,44 @@
         }
 
         // Même structure accessible qu'une ligne rendue côté serveur (voir
-        // navi_faq_render_row_markup(), admin.php) : role="group" +
+        // saito_faq_render_row_markup(), admin.php) : role="group" +
         // aria-labelledby vers le titre, chaque champ avec un
         // label/id associés (WCAG 1.3.1/4.1.2 — un <label> sans attribut
         // "for" correspondant n'est pas programmatiquement relié à son
         // champ pour un lecteur d'écran).
         function makeRow(number, values, open) {
             values = values || {};
-            var editorId = 'navi_faq_answer_' + number;
+            var editorId = 'saito_faq_answer_' + number;
             var groupId = prefix + '_group_' + number;
             var questionId = prefix + '_question_' + number;
             var titleId = prefix + '_row_title_' + number;
             var bodyId = prefix + '_row_body_' + number;
 
             var row = document.createElement('div');
-            row.className = 'navi-faq-row';
+            row.className = 'saito-faq-row';
             row.setAttribute('role', 'group');
             row.setAttribute('aria-labelledby', titleId);
             row.innerHTML =
-                '<div class="navi-faq-row-header">' +
-                    '<button type="button" class="navi-faq-row-toggle" aria-expanded="' + (open ? 'true' : 'false') + '" aria-controls="' + bodyId + '">' +
-                        '<span class="navi-faq-row-title" id="' + titleId + '"></span>' +
-                        '<span class="navi-faq-row-chevron" aria-hidden="true"></span>' +
+                '<div class="saito-faq-row-header">' +
+                    '<button type="button" class="saito-faq-row-toggle" aria-expanded="' + (open ? 'true' : 'false') + '" aria-controls="' + bodyId + '">' +
+                        '<span class="saito-faq-row-title" id="' + titleId + '"></span>' +
+                        '<span class="saito-faq-row-chevron" aria-hidden="true"></span>' +
                     '</button>' +
-                    '<button type="button" class="navi-faq-remove-row" aria-label="' + naviFaqAdminI18n.remove + '">&times;</button>' +
+                    '<button type="button" class="saito-faq-remove-row" aria-label="' + naviFaqAdminI18n.remove + '">&times;</button>' +
                 '</div>' +
-                '<div class="navi-faq-row-body" id="' + bodyId + '"' + (open ? '' : ' hidden') + '>' +
-                    '<p class="navi-faq-field navi-faq-field-group">' +
+                '<div class="saito-faq-row-body" id="' + bodyId + '"' + (open ? '' : ' hidden') + '>' +
+                    '<p class="saito-faq-field saito-faq-field-group">' +
                         '<label for="' + groupId + '">' + naviFaqAdminI18n.group + '</label>' +
-                        '<input type="text" class="widefat" id="' + groupId + '" list="navi-faq-themes-datalist" name="' + prefix + '_group[]" placeholder="' + naviFaqAdminI18n.groupPlaceholder + '" />' +
+                        '<input type="text" class="widefat" id="' + groupId + '" list="saito-faq-themes-datalist" name="' + prefix + '_group[]" placeholder="' + naviFaqAdminI18n.groupPlaceholder + '" />' +
                     '</p>' +
-                    '<p class="navi-faq-field">' +
+                    '<p class="saito-faq-field">' +
                         '<label for="' + questionId + '">' + naviFaqAdminI18n.question + '</label>' +
                         '<input type="text" class="widefat" id="' + questionId + '" name="' + prefix + '_question[]" placeholder="' + naviFaqAdminI18n.questionPlaceholder + '" />' +
                     '</p>' +
-                    '<div class="navi-faq-field navi-faq-field-answer">' +
+                    '<div class="saito-faq-field saito-faq-field-answer">' +
                         '<label for="' + editorId + '">' + naviFaqAdminI18n.answer + '</label>' +
                         '<textarea id="' + editorId + '" class="widefat" rows="5" name="' + prefix + '_answer[]"></textarea>' +
-                        '<p class="navi-faq-char-count" data-editor="' + editorId + '"></p>' +
+                        '<p class="saito-faq-char-count" data-editor="' + editorId + '"></p>' +
                     '</div>' +
                 '</div>';
 
@@ -196,12 +196,12 @@
             nextNumber++;
             rows.appendChild(row);
             renumberTitles();
-            initEditor('navi_faq_answer_' + number);
+            initEditor('saito_faq_answer_' + number);
             if (open) {
                 // Jamais cachée à la création : pas besoin de
                 // fixEditorLayoutOnce(), mais on marque quand même la ligne
                 // pour ne pas la retraiter inutilement à un futur repli/dépli.
-                row.querySelector('.navi-faq-row-body').setAttribute('data-editor-fixed', 'true');
+                row.querySelector('.saito-faq-row-body').setAttribute('data-editor-fixed', 'true');
             }
             return row;
         }
@@ -210,7 +210,7 @@
         // lignes — utilisé par l'import (voir importItems() plus bas) avant
         // de reconstruire la liste depuis le JSON collé.
         function clearRows() {
-            rows.querySelectorAll('textarea[id^="navi_faq_answer_"]').forEach(function (textarea) {
+            rows.querySelectorAll('textarea[id^="saito_faq_answer_"]').forEach(function (textarea) {
                 removeEditor(textarea.id);
             });
             rows.innerHTML = '';
@@ -232,13 +232,13 @@
         // Export : lit l'état actuel du formulaire (y compris non
         // enregistré) plutôt que la dernière version sauvegardée en base —
         // contrairement à "Dupliquer vers…", qui copie volontairement les
-        // données déjà en base (voir navi_faq_ajax_duplicate(), admin.php).
+        // données déjà en base (voir saito_faq_ajax_duplicate(), admin.php).
         function exportItems() {
             var items = [];
-            rows.querySelectorAll('.navi-faq-row').forEach(function (row) {
+            rows.querySelectorAll('.saito-faq-row').forEach(function (row) {
                 var questionInput = row.querySelector('input[name$="_question[]"]');
                 var groupInput = row.querySelector('input[name$="_group[]"]');
-                var textarea = row.querySelector('textarea[id^="navi_faq_answer_"]');
+                var textarea = row.querySelector('textarea[id^="saito_faq_answer_"]');
                 if (!questionInput || !questionInput.value.trim()) {
                     return;
                 }
@@ -296,7 +296,7 @@
         });
 
         rows.addEventListener('click', function (event) {
-            var toggle = event.target.closest('.navi-faq-row-toggle');
+            var toggle = event.target.closest('.saito-faq-row-toggle');
             if (toggle) {
                 event.preventDefault();
                 var wasOpen = 'true' === toggle.getAttribute('aria-expanded');
@@ -311,14 +311,14 @@
                 return;
             }
 
-            if (!event.target.classList.contains('navi-faq-remove-row')) {
+            if (!event.target.classList.contains('saito-faq-remove-row')) {
                 return;
             }
             if (!window.confirm(naviFaqAdminI18n.confirmRemove)) {
                 return;
             }
-            var row = event.target.closest('.navi-faq-row');
-            var textarea = row.querySelector('textarea[id^="navi_faq_answer_"]');
+            var row = event.target.closest('.saito-faq-row');
+            var textarea = row.querySelector('textarea[id^="saito_faq_answer_"]');
             if (textarea) {
                 removeEditor(textarea.id);
             }
@@ -327,11 +327,11 @@
             announce(naviFaqAdminI18n.rowRemoved);
         });
 
-        var exportBtn = editor.querySelector('.navi-faq-export-btn');
-        var importBtn = editor.querySelector('.navi-faq-import-btn');
-        var importFile = editor.querySelector('.navi-faq-import-file');
-        var importTextarea = editor.querySelector('.navi-faq-import-textarea');
-        var importStatus = editor.querySelector('.navi-faq-import-status');
+        var exportBtn = editor.querySelector('.saito-faq-export-btn');
+        var importBtn = editor.querySelector('.saito-faq-import-btn');
+        var importFile = editor.querySelector('.saito-faq-import-file');
+        var importTextarea = editor.querySelector('.saito-faq-import-textarea');
+        var importStatus = editor.querySelector('.saito-faq-import-status');
 
         // Choisir un fichier remplit simplement la zone de texte : on garde
         // un seul chemin de code pour valider/importer (le clic sur
@@ -368,7 +368,7 @@
                 var url = URL.createObjectURL(blob);
                 var link = document.createElement('a');
                 link.href = url;
-                link.download = 'navi-faq-' + prefix + '.json';
+                link.download = 'saito-faq-' + prefix + '.json';
                 document.body.appendChild(link);
                 link.click();
                 link.remove();
@@ -400,10 +400,10 @@
         }
 
         // La ligne rendue ouverte au chargement (la première, voir
-        // navi_faq_render_editor_ui(), admin.php) n'a jamais été cachée :
+        // saito_faq_render_editor_ui(), admin.php) n'a jamais été cachée :
         // son éditeur est déjà correctement dimensionné, pas besoin de
         // fixEditorLayoutOnce() à un futur dépli.
-        rows.querySelectorAll('.navi-faq-row-body:not([hidden])').forEach(function (body) {
+        rows.querySelectorAll('.saito-faq-row-body:not([hidden])').forEach(function (body) {
             body.setAttribute('data-editor-fixed', 'true');
         });
 
@@ -411,7 +411,7 @@
     });
 
     // --- Recherche dans la liste des destinations (seulement affichée au-delà
-    // de 5 destinations, voir navi_faq_render_duplicate_ui(), admin.php) :
+    // de 5 destinations, voir saito_faq_render_duplicate_ui(), admin.php) :
     // filtre les libellés côté client, insensible à la casse et aux accents
     // (ex. "vetements" retrouve "Vêtements"). ---
     // Plage Unicode des signes diacritiques combinants (U+0300-U+036F) :
@@ -428,13 +428,13 @@
         return str.toLowerCase().normalize( 'NFD' ).replace( DIACRITICS_PATTERN, '' );
     }
 
-    document.querySelectorAll( '.navi-faq-duplicate' ).forEach( function ( wrapper ) {
-        var searchInput = wrapper.querySelector( '.navi-faq-duplicate-search' );
+    document.querySelectorAll( '.saito-faq-duplicate' ).forEach( function ( wrapper ) {
+        var searchInput = wrapper.querySelector( '.saito-faq-duplicate-search' );
         if ( !searchInput ) {
             return;
         }
-        var options = wrapper.querySelectorAll( '.navi-faq-duplicate-target-option' );
-        var noResults = wrapper.querySelector( '.navi-faq-duplicate-no-results' );
+        var options = wrapper.querySelectorAll( '.saito-faq-duplicate-target-option' );
+        var noResults = wrapper.querySelector( '.saito-faq-duplicate-no-results' );
 
         searchInput.addEventListener( 'input', function () {
             var query = normalizeForSearch( searchInput.value.trim() );
@@ -453,13 +453,13 @@
     } );
 
     // --- "Dupliquer vers…" : appel AJAX, la sauvegarde est immédiate côté
-    // serveur (voir navi_faq_ajax_duplicate(), admin.php) — n'affecte pas
+    // serveur (voir saito_faq_ajax_duplicate(), admin.php) — n'affecte pas
     // le formulaire actuellement ouvert, seulement la destination choisie. ---
-    document.querySelectorAll('.navi-faq-duplicate-btn').forEach(function (btn) {
+    document.querySelectorAll('.saito-faq-duplicate-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
-            var wrapper = btn.closest('.navi-faq-duplicate');
-            var status = wrapper.querySelector('.navi-faq-duplicate-status');
-            var checked = wrapper.querySelectorAll('.navi-faq-duplicate-targets input[type="checkbox"]:checked');
+            var wrapper = btn.closest('.saito-faq-duplicate');
+            var status = wrapper.querySelector('.saito-faq-duplicate-status');
+            var checked = wrapper.querySelectorAll('.saito-faq-duplicate-targets input[type="checkbox"]:checked');
 
             if (!checked.length) {
                 status.textContent = naviFaqAdminI18n.duplicateChooseTarget;
@@ -475,7 +475,7 @@
             status.textContent = naviFaqAdminI18n.duplicateInProgress;
 
             var data = new FormData();
-            data.append('action', 'navi_faq_duplicate');
+            data.append('action', 'saito_faq_duplicate');
             data.append('nonce', btn.getAttribute('data-nonce'));
             data.append('source', btn.getAttribute('data-source'));
             checked.forEach(function (checkbox) {
@@ -502,11 +502,11 @@
     });
 
     // --- Onglets internes du panneau "Navi" (metabox autonome sur la fiche
-    // produit, voir includes/navi-panel.php) — indépendant de la boucle par
+    // produit, voir includes/saito-panel.php) — indépendant de la boucle par
     // éditeur FAQ ci-dessus : ce panneau peut un jour contenir plusieurs
     // fonctionnalités Navi, pas seulement FAQ. ---
-    document.querySelectorAll('.navi-panel-tabs').forEach(function (wrap) {
-        var tabs = wrap.querySelectorAll('.navi-panel-tab-btn');
+    document.querySelectorAll('.saito-panel-tabs').forEach(function (wrap) {
+        var tabs = wrap.querySelectorAll('.saito-panel-tab-btn');
 
         function activate(tab) {
             tabs.forEach(function (btn) {
@@ -522,7 +522,7 @@
         }
 
         wrap.addEventListener('click', function (event) {
-            var tab = event.target.closest('.navi-panel-tab-btn');
+            var tab = event.target.closest('.saito-panel-tab-btn');
             if (tab) {
                 activate(tab);
             }

@@ -1,17 +1,17 @@
 (function () {
     // --- Accordéon exclusif : ouvrir une question referme les autres du même
     // groupe. Le pli/dépli lui-même est natif (<details>/<summary>, voir
-    // navi_faq_render_item_html() dans frontend.php) : ceci n'est qu'un
+    // saito_faq_render_item_html() dans frontend.php) : ceci n'est qu'un
     // confort en plus, capturé en phase de capture car l'évènement natif
     // 'toggle' ne remonte pas (pas de bubbling) — la capture, elle,
     // fonctionne quel que soit le bubbling. ---
-    document.querySelectorAll('.navi-faq-accordion').forEach(function (accordion) {
+    document.querySelectorAll('.saito-faq-accordion').forEach(function (accordion) {
         accordion.addEventListener('toggle', function (event) {
             var target = event.target;
-            if (!target.matches('.navi-faq-item') || !target.open) {
+            if (!target.matches('.saito-faq-item') || !target.open) {
                 return;
             }
-            accordion.querySelectorAll('.navi-faq-item[open]').forEach(function (other) {
+            accordion.querySelectorAll('.saito-faq-item[open]').forEach(function (other) {
                 if (other !== target) {
                     other.removeAttribute('open');
                 }
@@ -22,7 +22,7 @@
     // --- Onglets par thème : clic + navigation clavier flèches gauche/droite
     // (pattern ARIA Tabs, https://www.w3.org/WAI/ARIA/apg/patterns/tabs/) ---
     function activateTab(tablist, tab) {
-        var tabs = tablist.querySelectorAll('.navi-faq-tab-btn');
+        var tabs = tablist.querySelectorAll('.saito-faq-tab-btn');
         tabs.forEach(function (btn) {
             var isActive = btn === tab;
             btn.classList.toggle('active', isActive);
@@ -38,11 +38,11 @@
         tab.focus();
     }
 
-    document.querySelectorAll('.navi-faq-tabs-nav').forEach(function (tablist) {
-        var tabs = Array.prototype.slice.call(tablist.querySelectorAll('.navi-faq-tab-btn'));
+    document.querySelectorAll('.saito-faq-tabs-nav').forEach(function (tablist) {
+        var tabs = Array.prototype.slice.call(tablist.querySelectorAll('.saito-faq-tab-btn'));
 
         tablist.addEventListener('click', function (event) {
-            var tab = event.target.closest('.navi-faq-tab-btn');
+            var tab = event.target.closest('.saito-faq-tab-btn');
             if (tab) {
                 activateTab(tablist, tab);
             }
@@ -71,7 +71,7 @@
     });
 
     // --- Ancre directe vers une question (#faq-N, voir
-    // navi_faq_next_anchor_id() dans frontend.php) : la déplie et active
+    // saito_faq_next_anchor_id() dans frontend.php) : la déplie et active
     // l'onglet qui la contient si elle est dans un panneau caché — sans
     // ça, le navigateur ne peut ni faire défiler jusqu'à un élément dans un
     // ancêtre [hidden], ni le dévoiler lui-même. ---
@@ -86,14 +86,14 @@
         } catch {
             return; // Fragment non exploitable comme sélecteur CSS.
         }
-        if (!target || !target.classList.contains('navi-faq-item')) {
+        if (!target || !target.classList.contains('saito-faq-item')) {
             return;
         }
 
-        var panel = target.closest('.navi-faq-tab-panel');
+        var panel = target.closest('.saito-faq-tab-panel');
         if (panel && panel.hasAttribute('hidden')) {
             var tab = document.getElementById(panel.getAttribute('aria-labelledby'));
-            var tablist = tab ? tab.closest('.navi-faq-tabs-nav') : null;
+            var tablist = tab ? tab.closest('.saito-faq-tabs-nav') : null;
             if (tab && tablist) {
                 activateTab(tablist, tab);
             }
