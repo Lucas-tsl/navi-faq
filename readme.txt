@@ -1,4 +1,4 @@
-=== Navi FAQ ===
+=== Saito FAQ ===
 Contributors: lucastsl
 Tags: faq, woocommerce, schema, json-ld, accordion
 Requires at least: 6.0
@@ -12,7 +12,7 @@ FAQ (questions/answers) on posts, pages, products and WooCommerce product catego
 
 == Description ==
 
-Navi FAQ adds questions/answers to posts, pages, **products, and
+Saito FAQ adds questions/answers to posts, pages, **products, and
 WooCommerce product categories** — most existing FAQ plugins cover the
 first three content types but not categories, since there is no native
 post-meta equivalent for a taxonomy term.
@@ -21,7 +21,7 @@ post-meta equivalent for a taxonomy term.
 
 * **Coverage**: posts, pages, products, product categories — extendable to
   other content types or taxonomies via the `navi_faq_post_types` and
-  `navi_faq_taxonomies` filters.
+  `saito_faq_taxonomies` filters.
 * **Admin**: a FAQ box on the post/page/product edit screen, and the same
   field on the category edit screen — shared interface, add/remove
   questions in JavaScript, no page reload.
@@ -30,15 +30,15 @@ post-meta equivalent for a taxonomy term.
   shared tab on the front end. A single theme in use (or none): plain
   accordion, no unnecessary tabs.
 * **Display**:
-  * `[navi_faq]` — FAQ for the current context (the post/page/product being
+  * `[saito_faq]` — FAQ for the current context (the post/page/product being
     viewed, or a covered category archive page).
-  * `[navi_faq_all]` — every FAQ on the site, grouped by title, for a
+  * `[saito_faq_all]` — every FAQ on the site, grouped by title, for a
     centralized "Frequently Asked Questions" page.
   * Automatic display at the top of category archive pages (there is no
     content area to manually place a shortcode on this page type).
 * **FAQPage schema (JSON-LD)** generated server-side, only where the
   content is actually visible: always on a covered category, only if
-  `[navi_faq]` is placed in the content on a post/page/product — in line
+  `[saito_faq]` is placed in the content on a post/page/product — in line
   with Google's structured data guidelines.
 * **Accessibility**: accordion built on native `<details>`/`<summary>`
   (works even without JavaScript), left/right/Home/End arrow-key
@@ -47,14 +47,14 @@ post-meta equivalent for a taxonomy term.
 
 == Installation ==
 
-1. Upload the `navi-faq` folder to `/wp-content/plugins/`, or install
+1. Upload the `saito-faq` folder to `/wp-content/plugins/`, or install
    directly from **Plugins > Add New**.
 2. Activate the plugin from the **Plugins** menu.
-3. Edit a post, page, or product: a "FAQ (Navi)" box appears below the
+3. Edit a post, page, or product: a "FAQ (Saito)" box appears below the
    content editor.
 4. For product categories (requires WooCommerce active): **Products >
    Categories**, edit a category — the same form appears there.
-5. Place the `[navi_faq]` shortcode in a post/page/product's content to
+5. Place the `[saito_faq]` shortcode in a post/page/product's content to
    display it (categories display automatically).
 
 == Frequently Asked Questions ==
@@ -74,7 +74,7 @@ display under a shared tab on the front end.
 = Does the FAQPage schema output on every page? =
 
 No, only where the FAQ is actually displayed: automatically on a covered
-category archive page, and on a post/page/product only if the `[navi_faq]`
+category archive page, and on a post/page/product only if the `[saito_faq]`
 shortcode is placed in its content.
 
 == Screenshots ==

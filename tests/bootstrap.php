@@ -4,7 +4,7 @@
  * (wp-phpunit), qui exige une base de données MySQL et un checkout complet
  * de WordPress (voir la même approche dans le plugin compagnon Saito Navi,
  * tests/bootstrap.php). Les fonctions couvertes ici
- * (navi_faq_sanitize_items(), navi_faq_group_items_by_theme()) sont pures
+ * (saito_faq_sanitize_items(), saito_faq_group_items_by_theme()) sont pures
  * ou quasi pures : seuls quelques bouchons minimalistes des fonctions
  * WordPress qu'elles appellent suffisent à les charger et à les exécuter
  * isolément.
@@ -26,7 +26,7 @@ if ( ! function_exists( 'wp_strip_all_tags' ) ) {
 
 if ( ! function_exists( 'wp_kses_post' ) ) {
     // Bouchon volontairement permissif (pas de vraie liste blanche de
-    // balises) : les tests de navi_faq_sanitize_items() vérifient que
+    // balises) : les tests de saito_faq_sanitize_items() vérifient que
     // l'entrée est bien passée à cette fonction, pas le détail de sa
     // politique de filtrage HTML (déjà couverte par WordPress lui-même).
     function wp_kses_post( $str ) {

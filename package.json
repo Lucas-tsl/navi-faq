@@ -1,5 +1,5 @@
 {
-  "name": "navi-faq",
+  "name": "saito-faq",
   "version": "0.1.0",
   "private": true,
   "description": "FAQ (questions/réponses) sur les articles, pages, produits et catégories de produits WooCommerce, avec schéma FAQPage (JSON-LD) et regroupement par thème.",
