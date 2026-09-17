@@ -1,33 +1,33 @@
 /* Front : bloc FAQ (accordéon simple ou à onglets) — largeur plafonnée et
    centrée pour ne pas s'étirer sur toute la largeur d'une zone de contenu. */
-.navi-faq-block {
+.saito-faq-block {
     max-width: 1200px;
     margin: 1.5em auto;
 }
 
-.navi-faq-block-title {
+.saito-faq-block-title {
     margin-bottom: 0.75em;
 }
 
 /* Accordéon : cartes fines, sans arrondi, léger contraste à l'ouverture —
-   <details>/<summary> natifs (voir navi_faq_render_item_html(), frontend.php). */
-.navi-faq-item {
+   <details>/<summary> natifs (voir saito_faq_render_item_html(), frontend.php). */
+.saito-faq-item {
     border: 1px solid #f0f0f0;
     margin-bottom: 12px;
     background-color: #fff;
     transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
-.navi-faq-item:last-child {
+.saito-faq-item:last-child {
     margin-bottom: 0;
 }
 
-.navi-faq-item[open] {
+.saito-faq-item[open] {
     border-color: #e5e5e5;
     background-color: #fafbfc;
 }
 
-.navi-faq-question {
+.saito-faq-question {
     cursor: pointer;
     list-style: none;
     display: flex;
@@ -40,14 +40,14 @@
     font-weight: 500;
 }
 
-.navi-faq-question::-webkit-details-marker {
+.saito-faq-question::-webkit-details-marker {
     display: none;
 }
 
 /* Chevron dessiné en CSS (coin de bordure pivoté) plutôt qu'une police
    d'icônes ou une image : aucune dépendance externe, aucun flash au
    chargement. */
-.navi-faq-question::after {
+.saito-faq-question::after {
     content: '';
     flex: 0 0 auto;
     width: 7px;
@@ -58,56 +58,56 @@
     transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
-.navi-faq-item[open] .navi-faq-question::after {
+.saito-faq-item[open] .saito-faq-question::after {
     transform: rotate(225deg);
     border-color: #111;
 }
 
-.navi-faq-answer {
+.saito-faq-answer {
     padding: 0 20px 20px;
     color: #555;
     line-height: 1.6;
     font-size: 0.95rem;
-    animation: navi-faq-fade-in 0.25s ease-out;
+    animation: saito-faq-fade-in 0.25s ease-out;
 }
 
-.navi-faq-answer a {
+.saito-faq-answer a {
     color: #111;
     text-decoration: underline;
     text-underline-offset: 3px;
 }
 
-@keyframes navi-faq-fade-in {
+@keyframes saito-faq-fade-in {
     from { opacity: 0; transform: translateY(4px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .navi-faq-answer {
+    .saito-faq-answer {
         animation: none;
     }
 }
 
-/* Front : onglets par thème (2+ thèmes nommés, voir navi_faq_render_items_html) */
-.navi-faq-tabs {
+/* Front : onglets par thème (2+ thèmes nommés, voir saito_faq_render_items_html) */
+.saito-faq-tabs {
     display: flex;
     flex-wrap: wrap;
     gap: 30px;
 }
 
-.navi-faq-tabs-nav {
+.saito-faq-tabs-nav {
     flex: 0 0 calc(33.333% - 15px);
     max-width: calc(33.333% - 15px);
     display: flex;
     flex-direction: column;
 }
 
-.navi-faq-tabs-panels {
+.saito-faq-tabs-panels {
     flex: 1 1 calc(66.666% - 15px);
     min-width: 0;
 }
 
-.navi-faq-tab-btn {
+.saito-faq-tab-btn {
     display: block;
     width: 100%;
     text-align: left;
@@ -120,45 +120,45 @@
     color: #666;
 }
 
-.navi-faq-tab-btn:hover {
+.saito-faq-tab-btn:hover {
     color: #111;
 }
 
-.navi-faq-tab-btn:focus-visible {
+.saito-faq-tab-btn:focus-visible {
     outline: 2px solid #111;
     outline-offset: 2px;
 }
 
-.navi-faq-tab-btn.active {
+.saito-faq-tab-btn.active {
     background-color: #f8f9fa;
     border-color: #f1f3f5;
     color: #111;
     font-weight: 600;
 }
 
-.navi-faq-tab-panel[hidden] {
+.saito-faq-tab-panel[hidden] {
     display: none;
 }
 
-.navi-faq-tab-panel.active {
-    animation: navi-faq-fade-in 0.3s ease-out;
+.saito-faq-tab-panel.active {
+    animation: saito-faq-fade-in 0.3s ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .navi-faq-tab-panel.active {
+    .saito-faq-tab-panel.active {
         animation: none;
     }
 }
 
 @media (max-width: 768px) {
-    .navi-faq-tabs-nav {
+    .saito-faq-tabs-nav {
         flex: 0 0 100%;
         max-width: 100%;
         flex-flow: row wrap;
         gap: 8px;
     }
 
-    .navi-faq-tab-btn {
+    .saito-faq-tab-btn {
         width: auto;
         margin-bottom: 0;
         border: 1px solid #eee;
@@ -168,23 +168,23 @@
 /* Admin : éditeur de rangées Q/R (onglet "Données produit", metabox
    article/page, champ de terme) — même esprit visuel que le front (cartes
    fines, sans arrondi) pour une cohérence entre BO et affichage public. */
-.navi-faq-editor {
+.saito-faq-editor {
     max-width: 640px;
 }
 
-.navi-faq-empty {
+.saito-faq-empty {
     color: #666;
     font-style: italic;
     margin: 0 0 12px;
 }
 
-.navi-faq-row {
+.saito-faq-row {
     border: 1px solid #ddd;
     background: #fff;
     margin-bottom: 12px;
 }
 
-.navi-faq-row-header {
+.saito-faq-row-header {
     display: flex;
     align-items: stretch;
     justify-content: space-between;
@@ -192,7 +192,7 @@
     border-bottom: 1px solid #ddd;
 }
 
-.navi-faq-row-toggle {
+.saito-faq-row-toggle {
     flex: 1 1 auto;
     display: flex;
     align-items: center;
@@ -206,22 +206,22 @@
     font-size: inherit;
 }
 
-.navi-faq-row-toggle:hover {
+.saito-faq-row-toggle:hover {
     background: #eee;
 }
 
-.navi-faq-row-toggle:focus-visible {
+.saito-faq-row-toggle:focus-visible {
     outline: 2px solid #111;
     outline-offset: -2px;
 }
 
-.navi-faq-row-title {
+.saito-faq-row-title {
     font-weight: 700;
 }
 
 /* Chevron identique dans l'esprit à celui du front (coin de bordure
-   pivoté), voir .navi-faq-question::after plus haut. */
-.navi-faq-row-chevron {
+   pivoté), voir .saito-faq-question::after plus haut. */
+.saito-faq-row-chevron {
     flex: 0 0 auto;
     width: 7px;
     height: 7px;
@@ -231,11 +231,11 @@
     transition: transform 0.2s ease;
 }
 
-.navi-faq-row-toggle[aria-expanded="true"] .navi-faq-row-chevron {
+.saito-faq-row-toggle[aria-expanded="true"] .saito-faq-row-chevron {
     transform: rotate(45deg);
 }
 
-.navi-faq-remove-row {
+.saito-faq-remove-row {
     flex: 0 0 auto;
     background: none;
     border: none;
@@ -246,80 +246,80 @@
     padding: 0 12px;
 }
 
-.navi-faq-remove-row:hover {
+.saito-faq-remove-row:hover {
     color: #dc3232;
 }
 
-.navi-faq-row-body {
+.saito-faq-row-body {
     padding: 12px;
 }
 
-.navi-faq-row-body[hidden] {
+.saito-faq-row-body[hidden] {
     display: none;
 }
 
-.navi-faq-field {
+.saito-faq-field {
     margin: 0 0 10px;
 }
 
-.navi-faq-field:last-child {
+.saito-faq-field:last-child {
     margin-bottom: 0;
 }
 
-.navi-faq-field label {
+.saito-faq-field label {
     font-weight: 600;
     display: block;
     margin-bottom: 4px;
     font-size: 0.875rem;
 }
 
-.navi-faq-field-group label {
+.saito-faq-field-group label {
     font-weight: 400;
     color: #666;
 }
 
-.navi-faq-field-optional {
+.saito-faq-field-optional {
     font-weight: 400;
     color: #888;
 }
 
-.navi-faq-field .description {
+.saito-faq-field .description {
     margin: 2px 0 6px;
     font-size: 0.8125rem;
     color: #666;
 }
 
-.navi-faq-char-count {
+.saito-faq-char-count {
     margin: 6px 0 0;
     font-size: 0.8125rem;
     font-weight: 600;
     color: #666;
 }
 
-.navi-faq-char-count.is-good {
+.saito-faq-char-count.is-good {
     color: #2a7a35;
 }
 
-.navi-faq-char-count.is-warning {
+.saito-faq-char-count.is-warning {
     color: #b26a00;
 }
 
-.navi-faq-char-count.is-danger {
+.saito-faq-char-count.is-danger {
     color: #b32d2e;
 }
 
-.navi-faq-duplicate {
+.saito-faq-duplicate {
     margin-top: 16px;
     padding-top: 16px;
     border-top: 1px solid #ddd;
     max-width: 640px;
 }
 
-.navi-faq-duplicate h4 {
+.saito-faq-duplicate h4 {
     margin: 0 0 4px;
 }
 
-.navi-faq-duplicate-targets {
+.saito-faq-duplicate-targets {
     border: 1px solid #ddd;
     max-height: 220px;
     overflow-y: auto;
@@ -327,58 +327,58 @@
     margin: 8px 0;
 }
 
-.navi-faq-duplicate-target-option {
+.saito-faq-duplicate-target-option {
     display: block;
     padding: 4px 0;
 }
 
 /* Sans cette règle, [hidden] (posé par le filtre de recherche JS) perd
-   face à ".navi-faq-duplicate-target-option{display:block}" ci-dessus :
+   face à ".saito-faq-duplicate-target-option{display:block}" ci-dessus :
    même spécificité, et notre feuille de style est chargée après celle du
    navigateur, donc "display:block" gagnait et l'option restait visible. */
-.navi-faq-duplicate-target-option[hidden] {
+.saito-faq-duplicate-target-option[hidden] {
     display: none;
 }
 
-.navi-faq-duplicate-no-results {
+.saito-faq-duplicate-no-results {
     margin: 8px 0 0;
     font-style: italic;
     color: #666;
 }
 
-.navi-faq-duplicate-status {
+.saito-faq-duplicate-status {
     margin: 8px 0 0;
     font-size: 0.8125rem;
     color: #666;
 }
 
-.navi-faq-duplicate-status.is-error {
+.saito-faq-duplicate-status.is-error {
     color: #b32d2e;
 }
 
-.navi-faq-import-export {
+.saito-faq-import-export {
     margin-top: 16px;
     padding-top: 16px;
     border-top: 1px solid #ddd;
     max-width: 640px;
 }
 
-.navi-faq-import-export h4 {
+.saito-faq-import-export h4 {
     margin: 0 0 4px;
 }
 
-.navi-faq-import-textarea {
+.saito-faq-import-textarea {
     font-family: Consolas, Monaco, monospace;
     font-size: 0.8125rem;
 }
 
-.navi-faq-import-status {
+.saito-faq-import-status {
     margin: 8px 0 0;
     font-size: 0.8125rem;
     color: #666;
 }
 
-.navi-faq-import-status.is-error {
+.saito-faq-import-status.is-error {
     color: #b32d2e;
 }
 
@@ -386,41 +386,41 @@
    il n'y a pas de add_meta_box() possible là (contrairement à la fiche
    produit, voir navi_panel_render() plus bas) — ces couleurs reprennent
    celles du postbox natif WordPress pour donner la même impression de
-   "boîte" sur les deux écrans. Voir navi_faq_render_term_field(), admin.php. */
-.navi-panel-box {
+   "boîte" sur les deux écrans. Voir saito_faq_render_term_field(), admin.php. */
+.saito-panel-box {
     max-width: 640px;
     border: 1px solid #dcdcde;
     background: #fff;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
 }
 
-.navi-panel-box-header {
+.saito-panel-box-header {
     padding: 8px 12px;
     border-bottom: 1px solid #dcdcde;
     background: #f6f7f7;
 }
 
-.navi-panel-box-header h3 {
+.saito-panel-box-header h3 {
     margin: 0;
     font-size: 14px;
     line-height: 1.4;
 }
 
-.navi-panel-box-body {
+.saito-panel-box-body {
     padding: 12px;
 }
 
 /* Panneau "Navi" (metabox autonome sur la fiche produit, voir
-   includes/navi-panel.php) — onglets internes, affichés seulement quand 2
+   includes/saito-panel.php) — onglets internes, affichés seulement quand 2
    fonctionnalités Navi ou plus sont enregistrées. */
-.navi-panel-tabs-nav {
+.saito-panel-tabs-nav {
     display: flex;
     gap: 4px;
     border-bottom: 1px solid #ddd;
     margin-bottom: 12px;
 }
 
-.navi-panel-tab-btn {
+.saito-panel-tab-btn {
     background: none;
     border: none;
     border-bottom: 2px solid transparent;
@@ -431,20 +431,20 @@
     color: #666;
 }
 
-.navi-panel-tab-btn:hover {
+.saito-panel-tab-btn:hover {
     color: #111;
 }
 
-.navi-panel-tab-btn:focus-visible {
+.saito-panel-tab-btn:focus-visible {
     outline: 2px solid #111;
     outline-offset: -2px;
 }
 
-.navi-panel-tab-btn.active {
+.saito-panel-tab-btn.active {
     color: #111;
     border-bottom-color: #111;
 }
 
-.navi-panel-tab-panel[hidden] {
+.saito-panel-tab-panel[hidden] {
     display: none;
 }
