@@ -4,6 +4,7 @@
 .gitignore
 .distignore
 docs/
+.wordpress-org/
 node_modules/
 vendor/
 build/

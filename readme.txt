@@ -80,7 +80,7 @@ shortcode is placed in its content.
 == Screenshots ==
 
 1. FAQ box on a product edit screen, with the optional "Theme" field.
-2. Theme-grouped FAQ displayed as tabs on the front end.
+2. FAQ accordion displayed on the front end (automatically becomes tabs when 2+ themes are used).
 
 == Changelog ==
 
