@@ -60,7 +60,7 @@ mkdir -p "build/saito-faq"
 rsync -a --exclude-from=".distignore" ./ "build/saito-faq/"
 
 echo "==> Vérification : aucun fichier de dev dans le paquet assemblé"
-LEAKED=$(find build/saito-faq -maxdepth 1 \( -name "node_modules" -o -name ".git" -o -name ".claude" -o -name "composer.json" -o -name "package.json" -o -name "phpcs.xml.dist" -o -name "scripts" -o -name "README.md" -o -name "tests" \))
+LEAKED=$(find build/saito-faq -maxdepth 1 \( -name "node_modules" -o -name ".git" -o -name "composer.json" -o -name "package.json" -o -name "phpcs.xml.dist" -o -name "scripts" -o -name "README.md" -o -name "tests" \))
 if [ -n "$LEAKED" ]; then
     echo "Erreur : fichiers de dev présents dans le paquet, .distignore incomplet ou obsolète :" >&2
     echo "$LEAKED" >&2
