@@ -1,6 +1,6 @@
 {
   "name": "saito-faq",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "FAQ (questions/réponses) sur les articles, pages, produits et catégories de produits WooCommerce, avec schéma FAQPage (JSON-LD) et regroupement par thème.",
   "scripts": {

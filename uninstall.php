@@ -3,6 +3,9 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
     exit;
 }
 
+// Réglages partagés de Saito > Outils : supprimés seulement avec le dernier plugin Saito.
+require __DIR__ . '/includes/saito-hub/uninstall.php';
+
 global $wpdb;
 
 // Une seule meta (_saito_faq_items, voir SAITO_FAQ_META_KEY dans saito-faq.php),

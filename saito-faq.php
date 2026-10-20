@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Saito FAQ
  * Description: Questions/réponses sur les articles, pages, produits et catégories de produits (WooCommerce), avec schéma FAQPage (JSON-LD). Plugin compagnon de Saito Navi.
- * Version: 0.2.0
+ * Version: 0.3.0
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Author: Troteseil Lucas
@@ -14,7 +14,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'SAITO_FAQ_VERSION', '0.2.0' );
+define( 'SAITO_FAQ_VERSION', '0.3.0' );
 define( 'SAITO_FAQ_DIR', plugin_dir_path( __FILE__ ) );
 define( 'SAITO_FAQ_URL', plugin_dir_url( __FILE__ ) );
 define( 'SAITO_FAQ_META_KEY', '_saito_faq_items' );
@@ -41,8 +41,21 @@ function saito_faq_enqueue_shared_style() {
     wp_enqueue_style( 'saito-faq', SAITO_FAQ_URL . 'assets/css/saito-faq.css', array(), SAITO_FAQ_VERSION );
 }
 
+// Menu « Saito » commun aux plugins Saito (voir includes/saito-hub/hub.php).
+require_once SAITO_FAQ_DIR . 'includes/saito-hub/load.php';
+add_filter( 'saito_hub_plugins', 'saito_faq_register_in_saito_hub' );
+function saito_faq_register_in_saito_hub( $plugins ) {
+    $plugins['faq'] = array(
+        'version'      => SAITO_FAQ_VERSION,
+        'settings_url' => admin_url( 'admin.php?page=saito-faq' ),
+        'menu_slugs'   => array( 'saito-faq' ),
+    );
+    return $plugins;
+}
+
 require_once SAITO_FAQ_DIR . 'includes/data.php';
 require_once SAITO_FAQ_DIR . 'includes/admin.php';
+require_once SAITO_FAQ_DIR . 'includes/admin-page.php';
 require_once SAITO_FAQ_DIR . 'includes/saito-panel.php';
 require_once SAITO_FAQ_DIR . 'includes/frontend.php';
 require_once SAITO_FAQ_DIR . 'includes/schema.php';
