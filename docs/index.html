@@ -248,7 +248,7 @@
     <p>Une seule source de vérité, un seul format, quel que soit l'endroit où la FAQ est éditée ou affichée.</p>
     <div class="callout info">
       <span class="emoji">💡</span>
-      <span>Couverture extensible sans toucher au code : les types de contenu (<code>post</code>, <code>page</code>, <code>product</code>) et les taxonomies (<code>product_cat</code>) sont filtrables via <code>navi_faq_post_types</code> et <code>saito_faq_taxonomies</code>.</span>
+      <span>Couverture extensible sans toucher au code : les types de contenu (<code>post</code>, <code>page</code>, <code>product</code>) et les taxonomies (<code>product_cat</code>) sont filtrables via <code>saito_faq_post_types</code> et <code>saito_faq_taxonomies</code>.</span>
     </div>
   </section>
 
@@ -365,11 +365,11 @@
       <summary>Architecture, hooks, fichiers</summary>
       <ul>
         <li><strong>Donnée</strong> : une seule meta <code>_saito_faq_items</code> (post meta ou term meta), tableau <code>question</code> / <code>answer</code> (HTML limité, <code>wp_kses_post</code>) / <code>group</code>.</li>
-        <li><strong>Admin fiche produit</strong> : <code>includes/saito-panel.php</code> — metabox autonome <code>navi_panel_box</code> (<code>add_meta_box()</code>), avec un système d'onglets internes (<code>navi_product_panel_tabs</code>) activé seulement si 2 fonctionnalités Navi ou plus sont enregistrées.</li>
+        <li><strong>Admin fiche produit</strong> : <code>includes/saito-panel.php</code> — metabox autonome <code>navi_panel_box</code> (<code>add_meta_box()</code>), avec un système d'onglets internes (<code>saito_panel_tabs</code>) activé seulement si 2 fonctionnalités Navi ou plus sont enregistrées.</li>
         <li><strong>Admin catégorie</strong> : <code>includes/admin.php</code>, fonction <code>saito_faq_render_term_field()</code>, accrochée sur <code>{taxonomy}_edit_form_fields</code> — pas de <code>add_meta_box()</code> possible sur un écran de terme, d'où le <code>.saito-panel-box</code> qui reproduit l'habillage visuel à la main.</li>
         <li><strong>Duplication</strong> : AJAX <code>wp_ajax_saito_faq_duplicate</code>, nonce <code>saito_faq_duplicate</code>, remplace les FAQ des destinations cochées.</li>
         <li><strong>Front</strong> : <code>includes/frontend.php</code> — shortcodes <code>saito_faq</code> et <code>saito_faq_all</code>, accordéon <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code>, onglets ARIA si plusieurs thèmes, schéma <code>FAQPage</code> JSON-LD injecté conditionnellement.</li>
-        <li><strong>Couverture</strong> filtrable sans toucher au code : <code>navi_faq_post_types</code> (défaut <code>post</code>, <code>page</code>, <code>product</code>) et <code>saito_faq_taxonomies</code> (défaut <code>product_cat</code>).</li>
+        <li><strong>Couverture</strong> filtrable sans toucher au code : <code>saito_faq_post_types</code> (défaut <code>post</code>, <code>page</code>, <code>product</code>) et <code>saito_faq_taxonomies</code> (défaut <code>product_cat</code>).</li>
       </ul>
     </details>
     <div class="callout note" style="margin-top:20px;">

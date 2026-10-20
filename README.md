@@ -21,7 +21,7 @@ questions par thème (ex. "Livraison", "Le produit") pour les FAQ plus
 ## Fonctionnalités
 
 - **Couverture** : articles, pages, produits, catégories de produits
-  (`product_cat`) — extensible via les filtres `navi_faq_post_types` et
+  (`product_cat`) — extensible via les filtres `saito_faq_post_types` et
   `saito_faq_taxonomies`.
 - **Admin** : un encart FAQ sur les fiches article/page/produit, un champ
   identique sur l'écran d'édition de catégorie — même interface partagée,

@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 add_action( 'add_meta_boxes', 'saito_faq_register_meta_box' );
 function saito_faq_register_meta_box() {
-    foreach ( navi_faq_post_types() as $post_type ) {
+    foreach ( saito_faq_post_types() as $post_type ) {
         if ( 'product' === $post_type ) {
             continue;
         }
@@ -27,7 +27,7 @@ function saito_faq_render_meta_box( $post ) {
 
 add_action( 'save_post', 'saito_faq_save_post_meta' );
 function saito_faq_save_post_meta( $post_id ) {
-    if ( ! in_array( get_post_type( $post_id ), navi_faq_post_types(), true ) ) {
+    if ( ! in_array( get_post_type( $post_id ), saito_faq_post_types(), true ) ) {
         return;
     }
     if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
@@ -61,7 +61,7 @@ function saito_faq_register_term_hooks() {
 
 function saito_faq_render_term_field( $term ) {
     // Un écran d'édition de terme n'a pas de add_meta_box() (contrairement
-    // aux fiches produit, voir navi_panel_render(), saito-panel.php) : ce
+    // aux fiches produit, voir saito_panel_render(), saito-panel.php) : ce
     // <div class="saito-panel-box"> reproduit juste l'habillage visuel d'un
     // postbox natif WordPress (bordure + bandeau de titre "Navi"), pour que
     // les deux écrans présentent la FAQ dans une "boîte" au même style.

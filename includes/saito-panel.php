@@ -9,18 +9,18 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * plutôt que chaque fonctionnalité ajoutant sa propre entrée plate dans
  * "Données produit".
  *
- * Registre ouvert via le filtre 'navi_product_panel_tabs' : n'importe quel
- * plugin peut y ajouter un onglet (voir navi_panel_get_tabs()) sans créer
+ * Registre ouvert via le filtre 'saito_panel_tabs' : n'importe quel
+ * plugin peut y ajouter un onglet (voir saito_panel_get_tabs()) sans créer
  * de dépendance au chargement — si saito-faq est absent, ce filtre n'existe
  * simplement pas et l'appel n'a aucun effet pour l'appelant.
  */
 
 add_action( 'add_meta_boxes', 'saito_panel_register_meta_box' );
 function saito_panel_register_meta_box() {
-    if ( ! in_array( 'product', navi_faq_post_types(), true ) ) {
+    if ( ! in_array( 'product', saito_faq_post_types(), true ) ) {
         return;
     }
-    add_meta_box( 'navi_panel_box', __( 'Navi', 'saito-faq' ), 'navi_panel_render', 'product', 'normal', 'default' );
+    add_meta_box( 'navi_panel_box', __( 'Navi', 'saito-faq' ), 'saito_panel_render', 'product', 'normal', 'default' );
 }
 
 /**
@@ -28,12 +28,12 @@ function saito_panel_register_meta_box() {
  * ['label' => string, 'callback' => callable( WP_Post $post )]. FAQ
  * s'enregistre elle-même juste en dessous.
  */
-function navi_panel_get_tabs() {
-    $tabs = apply_filters( 'navi_product_panel_tabs', array() );
+function saito_panel_get_tabs() {
+    $tabs = apply_filters( 'saito_panel_tabs', array() );
     return is_array( $tabs ) ? $tabs : array();
 }
 
-add_filter( 'navi_product_panel_tabs', 'saito_faq_register_panel_tab' );
+add_filter( 'saito_panel_tabs', 'saito_faq_register_panel_tab' );
 function saito_faq_register_panel_tab( $tabs ) {
     $tabs['faq'] = array(
         'label'    => __( 'FAQ', 'saito-faq' ),
@@ -54,8 +54,8 @@ function saito_faq_render_panel_tab( $post ) {
  * onglets que si 2 thèmes ou plus sont réellement utilisés (voir
  * saito_faq_render_items_html(), frontend.php).
  */
-function navi_panel_render( $post ) {
-    $tabs = navi_panel_get_tabs();
+function saito_panel_render( $post ) {
+    $tabs = saito_panel_get_tabs();
     if ( empty( $tabs ) ) {
         return;
     }

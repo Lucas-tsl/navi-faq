@@ -73,7 +73,7 @@ function saito_faq_sanitize_items( array $questions, array $answers, array $grou
 function saito_faq_get_known_themes() {
     $themes = array();
 
-    foreach ( navi_faq_post_types() as $post_type ) {
+    foreach ( saito_faq_post_types() as $post_type ) {
         $query = new WP_Query( array(
             'post_type'      => $post_type,
             'posts_per_page' => -1,
@@ -139,7 +139,7 @@ function saito_faq_parse_entity_key( $key ) {
 function saito_faq_get_duplicate_targets( $exclude_type, $exclude_id ) {
     $targets = array();
 
-    foreach ( navi_faq_post_types() as $post_type ) {
+    foreach ( saito_faq_post_types() as $post_type ) {
         $post_type_object = get_post_type_object( $post_type );
         $type_label        = $post_type_object ? $post_type_object->labels->singular_name : $post_type;
 
