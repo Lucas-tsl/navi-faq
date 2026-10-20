@@ -34,7 +34,7 @@ function saito_faq_all_shortcode( $atts ) {
         $out .= '<h2 class="saito-faq-all-title">' . esc_html( $atts['title'] ) . '</h2>';
     }
 
-    foreach ( navi_faq_post_types() as $post_type ) {
+    foreach ( saito_faq_post_types() as $post_type ) {
         $query = new WP_Query( array(
             'post_type'      => $post_type,
             'posts_per_page' => -1,
@@ -78,7 +78,7 @@ function saito_faq_get_current_context_items() {
         return ( $term && ! is_wp_error( $term ) ) ? saito_faq_get_for_term( $term->term_id ) : array();
     }
 
-    if ( is_singular( navi_faq_post_types() ) ) {
+    if ( is_singular( saito_faq_post_types() ) ) {
         $post_id = get_the_ID();
         return $post_id ? saito_faq_get_for_post( $post_id ) : array();
     }
@@ -227,17 +227,52 @@ function saito_faq_render_tabbed_html( array $groups ) {
  * Affichage automatique en haut d'une page d'archive de catégorie de
  * produit : contrairement à un article/une page/un produit, une page
  * d'archive n'a pas de zone de contenu où coller [saito_faq] à la main.
+ *
+ * Deux points d'accroche, car le hook WooCommerce n'est jamais déclenché
+ * par un thème à blocs (le modèle d'archive y est rendu en blocs) :
+ * - thème classique : woocommerce_archive_description ;
+ * - thème à blocs : à la suite du bloc « Description du terme »
+ *   (core/term-description) du modèle d'archive.
+ * Le premier qui passe affiche la FAQ, l'autre ne fait plus rien.
  */
 add_action( 'woocommerce_archive_description', 'saito_faq_render_on_term_archive', 20 );
 function saito_faq_render_on_term_archive() {
-    if ( ! is_tax( saito_faq_taxonomies() ) ) {
-        return;
+    echo saito_faq_term_archive_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- déjà échappé dans saito_faq_render_items_html().
+}
+
+add_filter( 'render_block_core/term-description', 'saito_faq_append_to_term_description_block' );
+function saito_faq_append_to_term_description_block( $block_content ) {
+    return $block_content . saito_faq_term_archive_html();
+}
+
+/**
+ * HTML de la FAQ de l'archive courante, renvoyé une seule fois par requête
+ * (chaîne vide ensuite, ou hors archive couverte). Marque la FAQ comme
+ * affichée pour que le schéma FAQPage suive (voir
+ * saito_faq_output_term_schema(), schema.php).
+ */
+function saito_faq_term_archive_html() {
+    if ( saito_faq_term_archive_rendered() || ! is_tax( saito_faq_taxonomies() ) ) {
+        return '';
     }
     $items = saito_faq_get_current_context_items();
     if ( empty( $items ) ) {
-        return;
+        return '';
     }
-    echo saito_faq_render_items_html( $items, __( 'Questions fréquentes', 'saito-faq' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- déjà échappé dans saito_faq_render_items_html().
+    saito_faq_term_archive_rendered( true );
+    return saito_faq_render_items_html( $items, __( 'Questions fréquentes', 'saito-faq' ) );
+}
+
+/**
+ * Indique (et, avec $mark, enregistre) que la FAQ de l'archive courante a
+ * été affichée pendant la requête.
+ */
+function saito_faq_term_archive_rendered( $mark = false ) {
+    static $rendered = false;
+    if ( $mark ) {
+        $rendered = true;
+    }
+    return $rendered;
 }
 
 add_action( 'wp_enqueue_scripts', 'saito_faq_enqueue_front_assets' );

@@ -46,5 +46,11 @@ if ( ! function_exists( 'add_action' ) ) {
     }
 }
 
+if ( ! function_exists( 'add_filter' ) ) {
+    function add_filter( $tag, $callback, $priority = 10, $accepted_args = 1 ) {
+        return true;
+    }
+}
+
 require_once __DIR__ . '/../includes/data.php';
 require_once __DIR__ . '/../includes/frontend.php';

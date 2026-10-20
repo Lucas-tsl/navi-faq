@@ -4,7 +4,7 @@ Tags: faq, woocommerce, schema, json-ld, accordion
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.1.0
+Stable tag: 0.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,7 +20,7 @@ post-meta equivalent for a taxonomy term.
 **Main features**
 
 * **Coverage**: posts, pages, products, product categories — extendable to
-  other content types or taxonomies via the `navi_faq_post_types` and
+  other content types or taxonomies via the `saito_faq_post_types` and
   `saito_faq_taxonomies` filters.
 * **Admin**: a FAQ box on the post/page/product edit screen, and the same
   field on the category edit screen — shared interface, add/remove
@@ -84,12 +84,24 @@ shortcode is placed in its content.
 
 == Changelog ==
 
+= 0.2.0 =
+* Fix: with a block theme, the product category FAQ is now displayed
+  (after the "Term Description" block of the archive template).
+* Fix: on product category archives, the FAQPage schema is only output
+  when the FAQ is actually displayed on the page.
+* Rename the remaining `navi_` globals to the plugin prefix: the
+  `navi_faq_post_types` filter is now `saito_faq_post_types`, and the
+  shared product panel uses `saito_panel_get_tabs()` / `saito_panel_tabs`.
+
 = 0.1.0 =
 * Initial release: FAQ on posts/pages/products/product categories, theme
   grouping, FAQPage schema (JSON-LD), native `<details>`/`<summary>`
   accordion, keyboard navigation between tabs.
 
 == Upgrade Notice ==
+
+= 0.2.0 =
+Category FAQ now shown with block themes. If you used the `navi_faq_post_types` filter, rename it to `saito_faq_post_types`.
 
 = 0.1.0 =
 Initial release.

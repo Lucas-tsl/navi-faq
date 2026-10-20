@@ -384,7 +384,7 @@
 
 /* Boîte "Navi" habillée manuellement pour l'écran de terme (catégories) :
    il n'y a pas de add_meta_box() possible là (contrairement à la fiche
-   produit, voir navi_panel_render() plus bas) — ces couleurs reprennent
+   produit, voir saito_panel_render() plus bas) — ces couleurs reprennent
    celles du postbox natif WordPress pour donner la même impression de
    "boîte" sur les deux écrans. Voir saito_faq_render_term_field(), admin.php. */
 .saito-panel-box {
