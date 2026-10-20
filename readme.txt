@@ -4,7 +4,7 @@ Tags: faq, woocommerce, schema, json-ld, accordion
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.2.0
+Stable tag: 0.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,6 +84,14 @@ shortcode is placed in its content.
 
 == Changelog ==
 
+= 0.3.0 =
+* New shared "Saito" admin menu, common to all Saito plugins: Saito FAQ now
+  lives under Saito, next to a dashboard of the Saito plugins, a Tools
+  page (additional CSS and JavaScript for the whole site) and a
+  Documentation page (source code, documentation, WordPress.org pages).
+* New Saito > FAQ page: every post, page, product and product category
+  that has a FAQ, with edit links, and a reminder of the shortcodes.
+
 = 0.2.0 =
 * Fix: with a block theme, the product category FAQ is now displayed
   (after the "Term Description" block of the archive template).
@@ -99,6 +107,9 @@ shortcode is placed in its content.
   accordion, keyboard navigation between tabs.
 
 == Upgrade Notice ==
+
+= 0.3.0 =
+New shared "Saito" admin menu with a FAQ overview page. Nothing to change on upgrade.
 
 = 0.2.0 =
 Category FAQ now shown with block themes. If you used the `navi_faq_post_types` filter, rename it to `saito_faq_post_types`.
