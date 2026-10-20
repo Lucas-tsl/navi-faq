@@ -4,9 +4,9 @@ Plugin WordPress/WooCommerce : questions/réponses sur les articles, pages,
 **produits et catégories de produits**, avec schéma `FAQPage` (JSON-LD) et
 regroupement optionnel des questions par thème (affichage en onglets).
 
-Développé comme plugin compagnon de [Saito Navi](https://github.com/Lucas-tsl/navi-wordpress).
+Développé comme plugin compagnon de [Saito Navi](https://github.com/Lucas-tsl/saito-navi).
 
-📖 **[Documentation complète (captures d'écran + explications)](https://lucas-tsl.github.io/navi-faq/)**
+📖 **[Documentation complète (captures d'écran + explications)](https://lucas-tsl.github.io/saito-faq/)**
 ([version Notion](https://rectangular-tiara-ce3.notion.site/Navi-FAQ-Documentation-3c61e90fa69a81df9caad08c42242bf7))
 
 ## Pourquoi ce plugin
